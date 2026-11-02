@@ -1,0 +1,1252 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hoja de Respuestas PAES</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: una "hoja óptica" de papel al centro, con pista de marcas de lectura a la izquierda;
+   barra superior con pestañas; barra inferior fija con el envío. */
+:root{
+  --bg:#eceff3;          /* mesa, gris con sesgo azul */
+  --paper:#ffffff;       /* hoja */
+  --paper-2:#f6f7f9;
+  --ink:#1c2230;         /* texto */
+  --ink-2:#4a5263;
+  --ink-3:#7a8293;
+  --omr:#cf4a63;         /* tinta de impresión de la hoja (rosa "drop-out") */
+  --omr-soft:#f7dde2;
+  --lead:#23262c;        /* grafito del lápiz */
+  --accent:#1e4f9c;      /* azul tinta, para acciones */
+  --accent-ink:#ffffff;
+  --line:#d8dce3;
+  --good:#2b7d47; --good-bg:#e1f1e6;
+  --warn:#9a6412; --warn-bg:#f8ecd6;
+  --bad:#b8343a;  --bad-bg:#f8e0e0;
+  --shadow:0 1px 2px rgba(20,30,50,.06),0 8px 24px rgba(20,30,50,.07);
+  --f-display:"Barlow Semi Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11141a; --paper:#1a1e26; --paper-2:#20252f; --ink:#e7e9ee; --ink-2:#b4bac6; --ink-3:#858c9a;
+    --omr:#e5798c; --omr-soft:#3a2229; --lead:#eceef2; --accent:#86aef2; --accent-ink:#0d1422; --line:#2f3542;
+    --good:#6cc48a; --good-bg:#16301f; --warn:#e2b25c; --warn-bg:#33270f; --bad:#f08a8e; --bad-bg:#3a1a1c;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11141a; --paper:#1a1e26; --paper-2:#20252f; --ink:#e7e9ee; --ink-2:#b4bac6; --ink-3:#858c9a;
+  --omr:#e5798c; --omr-soft:#3a2229; --lead:#eceef2; --accent:#86aef2; --accent-ink:#0d1422; --line:#2f3542;
+  --good:#6cc48a; --good-bg:#16301f; --warn:#e2b25c; --warn-bg:#33270f; --bad:#f08a8e; --bad-bg:#3a1a1c;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h2{font-size:1.45rem;font-weight:700}
+h3{font-size:1.1rem;font-weight:600}
+p{margin:0}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--ink-3)}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* ---------- barra superior ---------- */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto}
+.brand-mark{width:30px;height:30px;border:2px solid var(--omr);border-radius:50%;display:grid;place-items:center}
+.brand-mark span{width:16px;height:16px;border-radius:50%;background:var(--lead)}
+.brand b{font-family:var(--f-display);font-size:1.2rem;font-weight:700;letter-spacing:.01em}
+.brand small{display:block;font-size:.72rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;line-height:1}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tab{border:0;background:transparent;padding:8px 12px;border-radius:8px;cursor:pointer;color:var(--ink-2);font-weight:600;white-space:nowrap;position:relative}
+.tab:hover{background:var(--paper-2)}
+.tab[aria-current="page"]{color:var(--ink);background:var(--paper-2)}
+.tab[aria-current="page"]::after{content:"";position:absolute;left:12px;right:12px;bottom:2px;height:2px;background:var(--omr);border-radius:2px}
+.tab .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--good);margin-left:6px;vertical-align:middle}
+.timer{display:flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:.95rem;padding:4px 6px 4px 10px;border:1px solid var(--line);border-radius:999px}
+.timer.over{color:var(--bad);border-color:var(--bad)}
+.timer button{border:0;background:var(--paper-2);border-radius:999px;padding:3px 10px;cursor:pointer;font-family:var(--f-body);font-size:.8rem;font-weight:600}
+
+@media (max-width:640px){
+  .top{position:static}
+  .top .wrap{gap:8px 12px}
+  .tabs{order:3;width:100%}
+  .tab{flex:1;padding:8px 6px}
+}
+main{padding-block:20px 140px}
+@media (max-width:640px){.dock .progress{flex-basis:100%}.dock .btn{flex:1}}
+.view{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+#res-body,#hist-body{grid-template-columns:minmax(0,1fr)}
+
+/* ---------- controles ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--paper);padding:9px 14px;border-radius:9px;cursor:pointer;font-weight:600;line-height:1.2}
+.btn:hover{border-color:var(--ink-3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.danger{color:var(--bad)}
+.btn.small{padding:6px 10px;font-size:.88rem}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+label.field{display:grid;gap:4px;font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600}
+.input,select.input,textarea.input{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:8px 10px;font-size:.95rem;text-transform:none;letter-spacing:0;color:var(--ink);font-weight:400;min-width:0;width:100%}
+textarea.input{font-family:var(--f-mono);font-size:.85rem;min-height:170px;resize:vertical}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:18px}
+.panel-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:12px}
+.hint{font-size:.88rem;color:var(--ink-2)}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap;text-transform:uppercase;letter-spacing:.05em}
+.chip.good{background:var(--good-bg);color:var(--good)}
+.chip.warn{background:var(--warn-bg);color:var(--warn)}
+.chip.bad{background:var(--bad-bg);color:var(--bad)}
+.chip.neutral{background:var(--paper-2);color:var(--ink-2)}
+
+/* ---------- configuración del ensayo ---------- */
+.config{display:grid;grid-template-columns:2fr 2fr 1fr;gap:12px}
+.config .custom{display:flex;gap:10px}
+@media (max-width:720px){.config{grid-template-columns:1fr}}
+
+/* ---------- la hoja ---------- */
+.sheet{background:var(--paper);border-radius:6px;box-shadow:var(--shadow);position:relative;padding:22px 22px 26px 46px;overflow:hidden}
+.sheet::before{ /* pista de marcas de lectura */
+  content:"";position:absolute;left:14px;top:22px;bottom:26px;width:12px;
+  background:repeating-linear-gradient(to bottom,var(--lead) 0 6px,transparent 6px 22px);opacity:.85}
+.sheet-head{border:1.5px solid var(--omr);border-radius:4px;display:grid;grid-template-columns:1.4fr 1fr 1fr;color:var(--omr)}
+.sheet-head > div{padding:8px 12px;border-left:1.5px solid var(--omr);min-width:0}
+.sheet-head > div:first-child{border-left:0}
+.sheet-head .lbl{font-size:.66rem;text-transform:uppercase;letter-spacing:.12em;font-weight:600}
+.sheet-head .val{font-family:var(--f-display);font-weight:600;font-size:1.05rem;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sheet-title{grid-column:1/-1;border-left:0!important;border-bottom:1.5px solid var(--omr);display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.sheet-title b{font-family:var(--f-display);font-size:1.05rem;letter-spacing:.14em;text-transform:uppercase}
+.sheet-title span{font-size:.75rem;letter-spacing:.06em}
+@media (max-width:560px){.sheet-head{grid-template-columns:1fr 1fr}.sheet-head > div:nth-child(2){grid-column:1/-1;border-left:0;border-bottom:1.5px solid var(--omr)}.sheet-head > div:nth-child(3){border-left:0}}
+.instr{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin:12px 0 4px;color:var(--omr);font-size:.78rem}
+.instr .ex{display:inline-flex;gap:4px;align-items:center}
+.instr .mini{width:14px;height:10px;border:1.3px solid var(--omr);border-radius:50%;display:inline-block}
+.instr .mini.f{background:var(--lead);border-color:var(--lead)}
+.instr .mini.x{position:relative}
+.instr .mini.x::after{content:"✕";position:absolute;inset:-4px 0 0;font-size:9px;text-align:center;color:var(--lead)}
+
+.cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:6px 22px;margin-top:14px}
+.col{display:grid;align-content:start}
+.q{display:grid;grid-template-columns:30px 1fr 22px;align-items:center;gap:4px;padding:3px 4px;border-radius:5px;outline:none}
+.q:focus-visible,.q.focus{background:var(--omr-soft)}
+.q.sep{border-bottom:1px dashed color-mix(in srgb,var(--omr) 45%,transparent);padding-bottom:6px;margin-bottom:3px}
+.qn{font-family:var(--f-mono);font-weight:600;font-size:.86rem;color:var(--omr);text-align:right;padding-right:4px}
+.bubs{display:flex;gap:6px;justify-content:space-between}
+.bub{position:relative;width:30px;height:21px;border-radius:50%;border:1.4px solid var(--omr);background:transparent;padding:0;cursor:pointer;
+  font-family:var(--f-mono);font-size:.68rem;font-weight:600;color:var(--omr);display:grid;place-items:center;transition:background .08s}
+.bub:hover{background:var(--omr-soft)}
+.bub[aria-pressed="true"]{background:var(--lead);border-color:var(--lead);color:transparent}
+.flag{width:22px;height:22px;border-radius:5px;border:1px solid transparent;background:transparent;color:var(--ink-3);cursor:pointer;font-weight:700;font-size:.8rem;padding:0;opacity:.55}
+.flag:hover{opacity:1;border-color:var(--line)}
+.flag[aria-pressed="true"]{opacity:1;background:var(--warn-bg);color:var(--warn);border-color:var(--warn)}
+
+/* modo corrección */
+.sheet.review .bub{cursor:default}
+.sheet.review .bub:hover{background:transparent}
+.sheet.review .bub.key{box-shadow:0 0 0 2.5px var(--good);border-color:var(--good)}
+.sheet.review .q.wrong .bub[aria-pressed="true"]{background:var(--bad);border-color:var(--bad)}
+.sheet.review .q.right .bub[aria-pressed="true"]{background:var(--good);border-color:var(--good)}
+.sheet.review .q.wrong .qn{color:var(--bad)}
+.sheet.review .q.omit .qn{color:var(--warn)}
+.sheet.review .q.right .qn{color:var(--good)}
+.review-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.82rem;color:var(--ink-2);margin-top:12px}
+.review-legend i{display:inline-block;width:14px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+
+.sheet-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px;color:var(--ink-3);font-size:.8rem}
+
+/* barra de envío */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:4;background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(6px);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom,0px)}
+.dock .wrap{display:flex;align-items:center;gap:14px;padding-block:10px;flex-wrap:wrap}
+.progress{flex:1;min-width:180px;display:grid;gap:5px}
+.progress .bar{height:6px;background:var(--paper-2);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+.progress .bar i{display:block;height:100%;background:var(--lead);border-radius:999px;width:0;transition:width .2s}
+.progress .txt{font-size:.85rem;color:var(--ink-2)}
+.progress .txt b{color:var(--ink);font-family:var(--f-mono)}
+
+/* ---------- clave ---------- */
+.two{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+@media (max-width:860px){.two{grid-template-columns:1fr}}
+.code{font-family:var(--f-mono);font-size:.8rem;background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;white-space:pre;overflow-x:auto;color:var(--ink-2)}
+.keystatus{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.keymeter{font-family:var(--f-display);font-size:2rem;font-weight:700;line-height:1}
+.keymeter small{font-size:1rem;color:var(--ink-3);font-weight:600}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;background:var(--paper-2);position:sticky;top:0}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--omr);font-weight:600;width:44px}
+.keyalts{display:flex;gap:4px}
+.keyalts button{width:30px;height:26px;border-radius:6px;border:1px solid var(--line);background:var(--paper);cursor:pointer;font-family:var(--f-mono);font-weight:600;font-size:.8rem;padding:0}
+.keyalts button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.keytable select,.keytable input{border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:5px 7px;font-size:.85rem;width:100%;min-width:150px}
+.msg{font-size:.88rem;padding:9px 12px;border-radius:8px}
+.msg.ok{background:var(--good-bg);color:var(--good)}
+.msg.err{background:var(--bad-bg);color:var(--bad)}
+.msg.info{background:var(--paper-2);color:var(--ink-2)}
+
+/* ---------- resultados ---------- */
+.summary{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:12px}
+@media (max-width:760px){.summary{grid-template-columns:1fr 1fr}}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:2px;align-content:start}
+.stat .k{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600}
+.stat .v{font-family:var(--f-display);font-size:2.1rem;font-weight:700;line-height:1.05;font-variant-numeric:tabular-nums}
+.stat .s{font-size:.85rem;color:var(--ink-2)}
+.stat.hero{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.stat.hero .k,.stat.hero .s{color:color-mix(in srgb,var(--paper) 72%,transparent)}
+.stat.hero .v{font-size:2.8rem}
+.meters{display:grid;gap:12px}
+.meter{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) auto;gap:12px;align-items:center}
+@media (max-width:620px){.meter{grid-template-columns:1fr auto}.meter .track{grid-column:1/-1;grid-row:2}}
+.meter .name{font-weight:600;min-width:0}
+.meter .name small{display:block;font-weight:400;color:var(--ink-3);font-size:.8rem}
+.track{height:12px;background:var(--paper-2);border:1px solid var(--line);border-radius:999px;position:relative;overflow:hidden}
+.track i{position:absolute;left:0;top:0;bottom:0;border-radius:999px}
+.track i.good{background:var(--good)}.track i.warn{background:var(--warn)}.track i.bad{background:var(--bad)}
+.track .tick{position:absolute;top:-2px;bottom:-2px;width:1px;background:var(--ink-3);opacity:.5}
+.meter .right{display:flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:.88rem}
+.plan{display:grid;gap:12px}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--paper);display:grid;gap:10px}
+.card.p-alta{border-left:4px solid var(--bad)}
+.card.p-media{border-left:4px solid var(--warn)}
+.card.p-ok{border-left:4px solid var(--good)}
+.card-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.card ul{margin:0;padding-left:20px;display:grid;gap:5px}
+.card .sub{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600}
+.qlist{display:flex;flex-wrap:wrap;gap:5px}
+.qlist span{font-family:var(--f-mono);font-size:.78rem;padding:1px 7px;border-radius:5px;background:var(--paper-2);border:1px solid var(--line)}
+.ans{font-family:var(--f-mono);font-weight:600;display:inline-grid;place-items:center;min-width:26px;height:22px;border-radius:11px;padding:0 6px}
+.ans.u-bad{background:var(--bad-bg);color:var(--bad)}
+.ans.u-omit{background:var(--warn-bg);color:var(--warn)}
+.ans.k{background:var(--good-bg);color:var(--good)}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters button{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:4px 12px;cursor:pointer;font-size:.85rem;font-weight:600}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.empty{text-align:center;padding:48px 16px;display:grid;gap:10px;justify-items:center}
+.empty .ring{width:64px;height:44px;border:2px dashed var(--omr);border-radius:50%}
+.habits{display:grid;gap:10px}
+.habit{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}
+.habit .ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-weight:700;font-family:var(--f-mono);font-size:.85rem}
+.habit .ic.bad{background:var(--bad-bg);color:var(--bad)}
+.habit .ic.warn{background:var(--warn-bg);color:var(--warn)}
+.habit .ic.good{background:var(--good-bg);color:var(--good)}
+.habit .ic.info{background:var(--paper-2);color:var(--ink-2)}
+.delta-up{color:var(--good)}.delta-down{color:var(--bad)}
+
+/* ---------- historial ---------- */
+.hist-group{display:grid;gap:10px}
+.hbars{display:flex;align-items:flex-end;gap:6px;height:120px;padding:8px 4px 0;border-bottom:1px solid var(--line);overflow-x:auto;position:relative}
+.hbar{flex:0 0 34px;display:grid;justify-items:center;gap:4px;align-self:stretch;align-content:end;cursor:default}
+.hbar i{width:20px;border-radius:4px 4px 0 0;background:var(--accent);display:block}
+.hbar span{font-family:var(--f-mono);font-size:.7rem;color:var(--ink-2)}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:20;background:rgba(10,14,22,.45);display:grid;place-items:center;padding:16px}
+.modal .box{background:var(--paper);border-radius:14px;max-width:440px;width:100%;padding:20px;display:grid;gap:14px;box-shadow:var(--shadow)}
+.modal .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:21;background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:999px;font-size:.9rem;box-shadow:var(--shadow)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><span></span></div>
+      <div><small>Ensayos PAES</small><b>Hoja de Respuestas</b></div>
+    </div>
+    <nav class="tabs" aria-label="Secciones">
+      <button class="tab" data-view="hoja" id="tab-hoja">Hoja</button>
+      <button class="tab" data-view="clave" id="tab-clave">Clave</button>
+      <button class="tab" data-view="resultados" id="tab-resultados">Resultados</button>
+      <button class="tab" data-view="historial" id="tab-historial">Historial</button>
+    </nav>
+    <div class="timer" id="timer" title="Cronómetro del ensayo">
+      <span id="timer-txt">00:00:00</span>
+      <button id="timer-btn" type="button">Iniciar</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ================= HOJA ================= -->
+  <section class="view" id="view-hoja">
+    <div class="panel">
+      <div class="config">
+        <label class="field">Prueba
+          <select class="input" id="cfg-prueba"></select>
+        </label>
+        <label class="field">Nombre del ensayo
+          <input class="input" id="cfg-nombre" placeholder="Ej.: Ensayo N°3 Preu – octubre" maxlength="80">
+        </label>
+        <label class="field">Fecha
+          <input class="input" id="cfg-fecha" type="date">
+        </label>
+        <div class="custom" id="cfg-custom" hidden>
+          <label class="field" style="flex:1">N° de preguntas
+            <input class="input" id="cfg-n" type="number" min="1" max="120">
+          </label>
+          <label class="field" style="flex:1">Alternativas
+            <select class="input" id="cfg-alts"><option value="4">A – D</option><option value="5">A – E</option></select>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet" id="sheet">
+      <div class="sheet-head">
+        <div class="sheet-title"><b>Hoja de respuestas</b><span>Marque una sola alternativa por pregunta</span></div>
+        <div><div class="lbl">Prueba</div><div class="val" id="sh-prueba">—</div></div>
+        <div><div class="lbl">Ensayo</div><div class="val" id="sh-nombre">—</div></div>
+        <div><div class="lbl">Fecha</div><div class="val mono" id="sh-fecha">—</div></div>
+      </div>
+      <div class="instr">
+        <span class="ex"><span class="mini f"></span> Correcto</span>
+        <span class="ex"><span class="mini x"></span> Incorrecto</span>
+        <span>Toca de nuevo una marca para borrarla · <b>?</b> marca la pregunta como duda · Con teclado: letra para marcar, ↑ ↓ para moverte</span>
+      </div>
+      <div class="cols" id="cols"></div>
+      <div class="review-legend" id="review-legend" hidden>
+        <span><i style="background:var(--good)"></i>Tu respuesta correcta</span>
+        <span><i style="background:var(--bad)"></i>Tu respuesta incorrecta</span>
+        <span><i style="box-shadow:0 0 0 2px var(--good)"></i>Alternativa correcta</span>
+        <span><b style="color:var(--warn)" class="mono">N°</b> Omitida</span>
+      </div>
+      <div class="sheet-foot"><span id="sh-count">—</span><span>Las respuestas se guardan automáticamente en este dispositivo</span></div>
+    </div>
+  </section>
+
+  <!-- ================= CLAVE ================= -->
+  <section class="view" id="view-clave" hidden>
+    <div class="panel keystatus">
+      <div class="keymeter mono" id="key-meter">0<small>/65</small></div>
+      <div style="flex:1;min-width:200px">
+        <h2 id="key-title">Sin clave cargada</h2>
+        <p class="hint" id="key-sub">Sube o pega la clave del ensayo. Puedes hacerlo antes o después de responder: la clave queda oculta hasta que la quieras ver.</p>
+      </div>
+      <button class="btn danger small" id="key-clear" type="button">Borrar clave</button>
+    </div>
+
+    <div class="two">
+      <div class="panel" style="display:grid;gap:12px">
+        <div class="panel-head" style="margin:0"><h3>Subir o pegar la clave</h3>
+          <label class="btn small" for="key-file" style="cursor:pointer">Subir archivo (.csv / .txt)</label>
+          <input type="file" id="key-file" accept=".csv,.txt,.tsv,text/plain,text/csv" hidden>
+        </div>
+        <textarea class="input" id="key-text" spellcheck="false" placeholder="1;B;Números;Porcentaje&#10;2;D;Álgebra y funciones;Función afín&#10;3;A;Geometría;Teorema de Pitágoras&#10;…"></textarea>
+        <div class="row">
+          <button class="btn primary" id="key-import" type="button">Cargar clave</button>
+          <button class="btn" id="key-template" type="button">Copiar plantilla</button>
+          <span class="hint" id="key-import-hint"></span>
+        </div>
+        <div id="key-msg" hidden></div>
+      </div>
+      <div class="panel" style="display:grid;gap:10px;align-content:start">
+        <h3>Formatos aceptados</h3>
+        <p class="hint">Una pregunta por línea: <b>número</b>, <b>alternativa correcta</b> y, opcional, <b>eje</b> y <b>contenido</b>. Separa con punto y coma, coma o tabulación (puedes copiar columnas desde Excel).</p>
+        <div class="code">N°;Clave;Eje;Contenido
+1;B;Números;Porcentaje
+2;D;Álgebra y funciones;Función afín
+3;A;Geometría;Teorema de Pitágoras</div>
+        <p class="hint">También sirve solo la secuencia de letras (<span class="mono">BDACB…</span>) o pares <span class="mono">1-B 2-D 3-A</span>. Luego asigna los ejes por rango más abajo.</p>
+        <p class="hint">El eje se reconoce aunque venga abreviado o sin tildes (“algebra”, “prob”, “geometria”). Si solo indicas el contenido, la app intenta deducir el eje.</p>
+      </div>
+    </div>
+
+    <div class="panel" style="display:grid;gap:12px">
+      <div class="panel-head" style="margin:0">
+        <h3>Asignar eje por rango de preguntas</h3>
+        <span class="hint">Útil cuando el ensayo agrupa las preguntas por eje</span>
+      </div>
+      <div class="row">
+        <label class="field" style="width:90px">Desde<input class="input" type="number" id="rng-from" min="1" value="1"></label>
+        <label class="field" style="width:90px">Hasta<input class="input" type="number" id="rng-to" min="1" value="10"></label>
+        <label class="field" style="flex:1;min-width:200px">Eje<select class="input" id="rng-eje"></select></label>
+        <button class="btn" id="rng-apply" type="button">Aplicar</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Clave pregunta por pregunta</h3>
+        <button class="btn small" id="key-toggle" type="button" aria-expanded="false">Mostrar clave</button>
+      </div>
+      <p class="hint" id="key-hidden-note">La clave está oculta para que no veas las respuestas mientras haces el ensayo. También puedes ingresarla aquí a mano.</p>
+      <div class="table-wrap keytable" id="key-table-wrap" hidden>
+        <table>
+          <thead><tr><th>N°</th><th>Clave</th><th>Eje</th><th>Contenido (opcional)</th></tr></thead>
+          <tbody id="key-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RESULTADOS ================= -->
+  <section class="view" id="view-resultados" hidden>
+    <div id="res-empty" class="panel empty">
+      <div class="ring" aria-hidden="true"></div>
+      <h2>Aún no hay resultados</h2>
+      <p class="hint" style="max-width:52ch">Responde en la hoja, carga la clave y presiona <b>Enviar respuestas</b>. Aquí verás tu puntaje, en qué te equivocaste, a qué eje del temario corresponde cada error y un plan para el próximo ensayo.</p>
+      <div class="row" style="justify-content:center"><button class="btn" data-goto="hoja" type="button">Ir a la hoja</button><button class="btn" data-goto="clave" type="button">Cargar clave</button></div>
+    </div>
+    <div id="res-body" hidden style="display:grid;gap:18px"></div>
+  </section>
+
+  <!-- ================= HISTORIAL ================= -->
+  <section class="view" id="view-historial" hidden>
+    <div id="hist-body" style="display:grid;gap:18px"></div>
+  </section>
+</main>
+
+<div class="dock" id="dock">
+  <div class="wrap">
+    <div class="progress">
+      <div class="txt" id="dock-txt">Respondidas <b>0</b> de <b>65</b></div>
+      <div class="bar"><i id="dock-bar"></i></div>
+    </div>
+    <button class="btn" id="btn-clear" type="button">Limpiar hoja</button>
+    <button class="btn primary" id="btn-send" type="button">Enviar respuestas</button>
+  </div>
+</div>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="box">
+    <h3 id="modal-title"></h3>
+    <p class="hint" id="modal-text"></p>
+    <div class="actions"><button class="btn" id="modal-cancel" type="button">Cancelar</button><button class="btn primary" id="modal-ok" type="button">Aceptar</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+"use strict";
+/* =====================================================================
+   TEMARIO PAES + RECOMENDACIONES
+   Ejes según temarios DEMRE vigentes (Admisión 2026/2027). Cada eje tiene:
+   alias (para reconocerlo en la clave), contenidos y consejos de mejora.
+   ===================================================================== */
+const PRUEBAS = {
+  CL: {
+    nombre: "Competencia Lectora", corto: "Comp. Lectora", n: 65, alts: 4, min: 150,
+    ejes: [
+      { id: "loc", nombre: "Localizar", alias: ["localizar", "localizacion", "rastrear", "explicita", "literal"],
+        contenidos: ["Información explícita", "Datos puntuales del texto", "Secuencia de hechos", "Identificar emisor, receptor o tema"],
+        tips: [
+          "Lee primero la pregunta y subraya la palabra clave; luego vuelve al párrafo exacto donde aparece. No respondas de memoria.",
+          "Desconfía de alternativas que repiten palabras del texto pero cambian un detalle (un número, un “siempre”, un “nunca”).",
+          "Numera los párrafos al leer: muchas preguntas indican “según el párrafo 3” y ganas tiempo al ubicarlo.",
+          "Si dos alternativas parecen correctas, la buena es la que está dicha en el texto, no la que deduces."
+        ] },
+      { id: "int", nombre: "Interpretar", alias: ["interpretar", "interpretacion", "inferir", "inferencia", "sintetizar", "relacionar", "vocabulario", "sinonimo", "sentido"],
+        contenidos: ["Vocabulario contextual", "Inferencias locales y globales", "Idea principal / síntesis", "Relación entre párrafos o partes", "Función de un fragmento", "Interpretación de lenguaje figurado"],
+        tips: [
+          "En vocabulario contextual, reemplaza la palabra por cada alternativa y relee la oración completa: elige la que mantiene el sentido, no el sinónimo de diccionario.",
+          "Para idea principal, escribe al margen 3–5 palabras por párrafo. La síntesis correcta cubre todo el texto, no solo un párrafo.",
+          "Una inferencia válida se apoya en algo concreto del texto. Si para justificar una alternativa tienes que “agregar” información, descártala.",
+          "Practica identificar conectores (sin embargo, por lo tanto, en cambio): revelan la relación entre párrafos que suelen preguntar."
+        ] },
+      { id: "eva", nombre: "Evaluar", alias: ["evaluar", "evaluacion", "reflexionar", "proposito", "intencion", "argument", "juzgar"],
+        contenidos: ["Propósito comunicativo", "Actitud o postura del emisor", "Validez de argumentos", "Recursos y forma del texto", "Relación con conocimientos externos"],
+        tips: [
+          "Pregúntate siempre: ¿para qué escribió esto el autor? (informar, persuadir, criticar, emocionar). Ese propósito filtra la mitad de las alternativas.",
+          "Distingue hechos de opiniones y tesis de argumentos: haz un mini esquema “tesis → razones” en textos argumentativos.",
+          "Fíjate en la actitud: adjetivos valorativos e ironía delatan la postura del emisor.",
+          "Al evaluar recursos (gráficos, citas, ejemplos), pregunta qué aportan al propósito del texto, no qué dicen por sí solos."
+        ] }
+    ],
+    general: [
+      "Haz al menos 2 textos cronometrados por semana (≈ 2 min 15 s por pregunta) para acostumbrarte al ritmo de la prueba.",
+      "Lee textos variados (columnas de opinión, reportajes, cuentos, infografías): la PAES mezcla textos literarios y no literarios."
+    ]
+  },
+  M1: {
+    nombre: "Competencia Matemática 1 (M1)", corto: "M1", n: 65, alts: 4, min: 140,
+    ejes: [
+      { id: "num", nombre: "Números", alias: ["numeros", "numero", "num", "aritmetica", "porcentaje", "potencia", "raiz", "racional", "entero", "fraccion", "decimal"],
+        contenidos: ["Números enteros y racionales", "Operatoria con fracciones y decimales", "Porcentaje", "Potencias de base racional y exponente entero", "Raíces enésimas y propiedades", "Problemas con razones y proporciones"],
+        tips: [
+          "Repasa propiedades de potencias y raíces con una ficha propia (producto, cociente, potencia de potencia, exponente negativo) y practica 10 ejercicios diarios.",
+          "Porcentajes: convierte todo a factor multiplicativo (aumentar 20 % = ×1,2; descontar 15 % = ×0,85). Así resuelves porcentajes sucesivos sin errores.",
+          "Antes de calcular, estima el orden de magnitud del resultado: elimina alternativas absurdas y detecta errores de signo.",
+          "Respeta la prioridad de operaciones y usa paréntesis al reemplazar números negativos."
+        ] },
+      { id: "alg", nombre: "Álgebra y funciones", alias: ["algebra", "funcion", "funciones", "alg", "ecuacion", "inecuacion", "sistema", "lineal", "afin", "cuadratica", "factoriz", "producto notable", "proporcional"],
+        contenidos: ["Expresiones algebraicas y productos notables", "Factorización", "Proporcionalidad directa e inversa", "Ecuaciones e inecuaciones de primer grado", "Sistemas de ecuaciones lineales 2×2", "Función lineal y afín", "Función cuadrática"],
+        tips: [
+          "Domina los productos notables en ambos sentidos (desarrollar y factorizar): aparecen camuflados en muchas preguntas.",
+          "En problemas de enunciado, define la incógnita por escrito (“x = precio de una entrada”) antes de plantear la ecuación.",
+          "Función cuadrática: practica leer vértice, ceros, eje de simetría y concavidad desde la fórmula y desde el gráfico.",
+          "En inecuaciones, recuerda invertir el signo al multiplicar o dividir por un negativo; comprueba con un valor de prueba.",
+          "Cuando haya alternativas con expresiones, reemplaza valores simples (x = 0, 1, 2) para descartar rápido."
+        ] },
+      { id: "geo", nombre: "Geometría", alias: ["geometria", "geo", "area", "perimetro", "volumen", "pitagoras", "isometri", "vector", "semejanza", "thales", "homotecia", "triangulo", "circunferencia"],
+        contenidos: ["Teorema de Pitágoras", "Perímetro y área de figuras planas", "Área y volumen de prismas y cilindros", "Transformaciones isométricas en el plano", "Vectores en el plano cartesiano", "Semejanza, proporcionalidad y homotecia"],
+        tips: [
+          "Dibuja siempre la figura y anota los datos sobre ella; muchos errores vienen de no visualizar el problema.",
+          "Memoriza tríos pitagóricos (3-4-5, 5-12-13, 8-15-17) y sus múltiplos: ahorran mucho tiempo.",
+          "Transformaciones isométricas: practica en papel cuadriculado traslaciones por vector, reflexiones y rotaciones de 90°/180° respecto al origen.",
+          "Revisa las unidades: cm² para área, cm³ para volumen; convierte antes de operar."
+        ] },
+      { id: "pye", nombre: "Probabilidad y estadística", alias: ["probabilidad", "estadistica", "prob", "est", "datos", "grafico", "media", "mediana", "moda", "cuartil", "percentil", "pye"],
+        contenidos: ["Tablas y gráficos de datos", "Medidas de tendencia central", "Medidas de posición: cuartiles y percentiles", "Diagrama de cajón", "Probabilidad clásica (Laplace)", "Reglas aditiva y multiplicativa"],
+        tips: [
+          "Lee el gráfico completo antes de responder: título, ejes, escala y si las frecuencias son absolutas o relativas.",
+          "Media, mediana y moda: practica calcularlas desde tablas de frecuencia y con datos agrupados.",
+          "Para cuartiles y diagramas de cajón, ordena los datos primero y ubica la posición; dibuja el cajón si no lo dan.",
+          "Probabilidad: escribe el espacio muestral o un diagrama de árbol. Distingue “y” (multiplicar) de “o” (sumar y restar intersección)."
+        ] }
+    ],
+    general: [
+      "En la PAES de Matemática, revisa si la pregunta es de suficiencia de datos: evalúa cada afirmación por separado y luego juntas.",
+      "Practica con tiempo: ≈ 2 min 9 s por pregunta. Si una te toma más de 3 minutos, márcala con duda y sigue."
+    ]
+  },
+  M2: {
+    nombre: "Competencia Matemática 2 (M2)", corto: "M2", n: 55, alts: 4, min: 140,
+    ejes: [
+      { id: "num", nombre: "Números", alias: ["numeros", "numero", "num", "real", "irracional", "logaritmo", "log", "financier", "interes"],
+        contenidos: ["Números reales e irracionales", "Operatoria con raíces y racionalización", "Logaritmos y sus propiedades", "Matemática financiera: interés simple y compuesto"],
+        tips: [
+          "Arma una ficha de propiedades de logaritmos (producto, cociente, potencia, cambio de base) y practica pasar entre forma exponencial y logarítmica.",
+          "Racionalización y operatoria con raíces: practica hasta hacerlo mecánico; es la base de muchas preguntas.",
+          "Interés compuesto: C·(1 + i)ⁿ. Fíjate si la tasa es mensual o anual y ajusta el n."
+        ] },
+      { id: "alg", nombre: "Álgebra y funciones", alias: ["algebra", "funcion", "funciones", "alg", "ecuacion", "cuadratica", "segundo grado", "sistema", "potencia", "exponencial", "logaritmica", "discriminante"],
+        contenidos: ["Ecuación de segundo grado y discriminante", "Sistemas de ecuaciones: análisis de soluciones", "Función potencia", "Funciones exponencial y logarítmica", "Función inversa y composición"],
+        tips: [
+          "Discriminante: memoriza qué indica Δ > 0, Δ = 0 y Δ < 0 sobre las soluciones y sobre el gráfico de la parábola.",
+          "Sistemas 2×2: practica decidir si tienen solución única, infinitas o ninguna comparando pendientes y coeficientes.",
+          "Funciones exponencial y logarítmica: grafica 3–4 casos a mano para fijar dominio, recorrido y crecimiento.",
+          "Para preguntas de modelación, identifica qué variable depende de cuál y verifica la fórmula con un dato del enunciado."
+        ] },
+      { id: "geo", nombre: "Geometría", alias: ["geometria", "geo", "trigonometr", "seno", "coseno", "esfera", "cono", "homotecia", "vector", "volumen"],
+        contenidos: ["Razones trigonométricas en triángulos rectángulos", "Área y volumen de cono y esfera", "Homotecia y semejanza", "Vectores y transformaciones"],
+        tips: [
+          "Razones trigonométricas: memoriza seno, coseno y tangente de 30°, 45° y 60° y practica problemas de altura y distancia.",
+          "Ten a mano las fórmulas de área y volumen de cono, esfera y cilindro; practica problemas de comparación de volúmenes.",
+          "En homotecia, recuerda que las áreas escalan con k² y los volúmenes con k³."
+        ] },
+      { id: "pye", nombre: "Probabilidad y estadística", alias: ["probabilidad", "estadistica", "prob", "est", "combinator", "permutaci", "condicional", "binomial", "desviacion", "dispersion", "varianza", "pye"],
+        contenidos: ["Medidas de dispersión: rango, varianza y desviación estándar", "Permutaciones y combinatoria", "Probabilidad condicional", "Modelos probabilísticos (binomial)"],
+        tips: [
+          "Combinatoria: antes de calcular decide si importa el orden (permutación) o no (combinación), y si hay repetición.",
+          "Probabilidad condicional: arma una tabla de doble entrada; P(A|B) se lee dentro de la fila o columna de B.",
+          "Desviación estándar: entiende qué significa (dispersión respecto a la media) sin calcular; muchas preguntas son conceptuales."
+        ] }
+    ],
+    general: [
+      "M2 premia la profundidad: después de cada ensayo rehace tú mismo los ejercicios errados sin mirar la solución.",
+      "Practica con tiempo: ≈ 2 min 30 s por pregunta."
+    ]
+  },
+  HIS: {
+    nombre: "Historia y Ciencias Sociales", corto: "Historia", n: 65, alts: 4, min: 120,
+    ejes: [
+      { id: "his", nombre: "Historia: mundo, América y Chile", alias: ["historia", "his", "mundo", "america", "chile", "siglo", "guerra", "revolucion", "independencia", "republica", "dictadura", "democracia"],
+        contenidos: ["Ilustración, revoluciones y Estado-nación", "Chile en el siglo XIX: organización de la República", "Expansión territorial y cuestión social", "Primera mitad del siglo XX: crisis y transformaciones", "Guerra Fría y América Latina", "Dictadura militar y recuperación de la democracia"],
+        tips: [
+          "Arma una línea de tiempo propia con los procesos clave de Chile y el mundo en paralelo: muchas preguntas piden relacionar ambos.",
+          "Estudia procesos (causas → desarrollo → consecuencias), no solo fechas. La PAES pregunta por relaciones e interpretaciones.",
+          "Practica análisis de fuentes: identifica autor, contexto y propósito de cada documento antes de leer las alternativas.",
+          "Distingue cambio y continuidad: pregúntate qué se mantuvo y qué se transformó en cada período."
+        ] },
+      { id: "civ", nombre: "Formación ciudadana", alias: ["formacion ciudadana", "ciudadan", "civica", "estado", "constitucion", "derechos", "ddhh", "democracia", "poderes", "participacion"],
+        contenidos: ["Estado de derecho y Constitución", "Poderes del Estado y sus atribuciones", "Derechos humanos y su protección", "Participación ciudadana y democracia", "Desafíos de la sociedad actual"],
+        tips: [
+          "Haz un cuadro con los poderes del Estado y los órganos autónomos: quién legisla, quién fiscaliza, quién controla constitucionalidad.",
+          "Relaciona cada derecho con su mecanismo de protección (recurso de protección, amparo, organismos internacionales).",
+          "Lee noticias de actualidad con ojo de ciudadanía: la prueba usa situaciones cotidianas para evaluar conceptos."
+        ] },
+      { id: "eco", nombre: "Sistema económico", alias: ["sistema economico", "economia", "economico", "eco", "mercado", "oferta", "demanda", "escasez", "precio", "inflacion", "consumidor"],
+        contenidos: ["Problema económico y escasez", "Oferta, demanda y precio de equilibrio", "Funcionamiento del mercado y rol del Estado", "Indicadores económicos", "Consumo responsable y endeudamiento"],
+        tips: [
+          "Practica desplazamientos de oferta y demanda con gráficos dibujados a mano: qué pasa con precio y cantidad en cada caso.",
+          "Diferencia “movimiento a lo largo de la curva” (cambia el precio) de “desplazamiento de la curva” (cambia otro factor).",
+          "Repasa el vocabulario económico básico (costo de oportunidad, inflación, PIB, tasa de interés) con ejemplos propios."
+        ] }
+    ],
+    general: [
+      "Más de la mitad de las preguntas incluye fuentes (textos, mapas, gráficos): entrena la lectura de fuentes tanto como el contenido."
+    ]
+  },
+  CIE: {
+    nombre: "Ciencias", corto: "Ciencias", n: 80, alts: 4, min: 160,
+    ejes: [
+      { id: "bio", nombre: "Biología", alias: ["biologia", "bio", "celula", "genetica", "herencia", "evolucion", "ecologia", "hormona", "nervioso", "reproduccion", "organismo"],
+        contenidos: ["Célula: estructura y función", "Procesos y funciones biológicas (sistemas, hormonas)", "Sistema nervioso", "Reproducción y desarrollo", "Herencia y genética", "Evolución", "Organismo y ambiente (ecología)"],
+        tips: [
+          "Haz esquemas propios de procesos (mitosis/meiosis, regulación hormonal, flujo de energía) y explícalos en voz alta.",
+          "Genética: practica cruzamientos y cuadros de Punnett hasta resolverlos en menos de 2 minutos.",
+          "En ecología, interpreta gráficos de poblaciones: qué variable cambia, cuál se mantiene y por qué."
+        ] },
+      { id: "qui", nombre: "Química", alias: ["quimica", "qui", "atomo", "atomica", "enlace", "organica", "estequiometr", "reaccion", "mol", "disolucion", "solucion", "concentracion"],
+        contenidos: ["Modelo atómico y tabla periódica", "Enlace químico", "Química orgánica", "Reacciones químicas y estequiometría", "Disoluciones y concentración"],
+        tips: [
+          "Estequiometría: sigue siempre el mismo orden (balancear → pasar a moles → razón molar → convertir) y revisa unidades.",
+          "Tabla periódica: entiende las tendencias (radio, electronegatividad, energía de ionización) en vez de memorizar valores.",
+          "Química orgánica: practica nombrar y reconocer grupos funcionales con fichas."
+        ] },
+      { id: "fis", nombre: "Física", alias: ["fisica", "fis", "onda", "sonido", "luz", "mecanica", "fuerza", "movimiento", "energia", "electric", "magnet", "tierra", "universo"],
+        contenidos: ["Ondas: sonido y luz", "Mecánica: movimiento y fuerzas", "Energía y su conservación", "Electricidad y magnetismo", "Tierra y universo"],
+        tips: [
+          "Escribe los datos con unidades y elige la fórmula según lo que piden; convierte a SI antes de reemplazar.",
+          "Mecánica: dibuja el diagrama de cuerpo libre en cada problema de fuerzas.",
+          "Ondas: repasa la relación v = λ·f y cómo cambian velocidad, frecuencia y longitud de onda al cambiar de medio."
+        ] },
+      { id: "hpc", nombre: "Habilidades de pensamiento científico", alias: ["habilidades", "pensamiento cientifico", "hpc", "experimento", "hipotesis", "variable", "procedimiento"],
+        contenidos: ["Variables dependiente, independiente y controlada", "Hipótesis y conclusiones", "Análisis de resultados experimentales", "Teorías, leyes y modelos"],
+        tips: [
+          "Ante un experimento, identifica primero qué se varía, qué se mide y qué se mantiene constante.",
+          "Distingue hipótesis, inferencia y conclusión: la conclusión solo puede afirmar lo que los datos muestran.",
+          "Practica leer tablas y gráficos de experimentos y redactar en una línea qué demuestran."
+        ] }
+    ],
+    general: [
+      "La prueba tiene un módulo común y un módulo electivo: organiza tu estudio priorizando tu electivo."
+    ]
+  },
+  OTRA: { nombre: "Otra / personalizada", corto: "Personalizada", n: 40, alts: 4, min: 0, ejes: [], general: [] }
+};
+const GENERIC_TIPS = [
+  "Rehaz las preguntas erradas sin mirar la respuesta y escribe por qué la alternativa correcta lo es y por qué elegiste la otra.",
+  "Busca 10–15 ejercicios de este eje en guías o ensayos anteriores y resuélvelos con tiempo.",
+  "Lleva un cuaderno de errores: anota el tipo de error (concepto, cálculo, lectura, tiempo) para ver patrones."
+];
+
+/* =====================================================================
+   ESTADO
+   ===================================================================== */
+const LS_STATE = "hojapaes.state.v1", LS_HIST = "hojapaes.hist.v1";
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const LETTERS = "ABCDE";
+function today() { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+function load(k, def) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch (e) { return def; } }
+function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function esc(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+function norm(s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9ñ ]+/g, " ").replace(/\s+/g, " ").trim(); }
+
+function blankState(prueba = "M1") {
+  const P = PRUEBAS[prueba];
+  return { prueba, nombre: "", fecha: today(), n: P.n, alts: P.alts, resp: Array(P.n).fill(""), dudas: Array(P.n).fill(false),
+    clave: Array.from({ length: P.n }, () => ({ r: "", eje: "", tema: "" })), submitted: false, result: null,
+    timer: { start: null, acc: 0 } };
+}
+let S = load(LS_STATE, null);
+if (!S || !PRUEBAS[S.prueba] || !Array.isArray(S.resp)) S = blankState();
+let H = load(LS_HIST, []);
+if (!Array.isArray(H)) H = [];
+const persist = () => save(LS_STATE, S);
+const P = () => PRUEBAS[S.prueba];
+const ejesActuales = () => {
+  const base = P().ejes.map(e => e.nombre);
+  const extra = [...new Set(S.clave.map(c => c.eje).filter(e => e && !base.includes(e)))];
+  return base.concat(extra);
+};
+
+function resize(n, alts) {
+  n = Math.max(1, Math.min(120, n | 0));
+  S.n = n; S.alts = alts;
+  const fit = (arr, fill) => { arr = arr.slice(0, n); while (arr.length < n) arr.push(typeof fill === "function" ? fill() : fill); return arr; };
+  S.resp = fit(S.resp, "").map(r => (LETTERS.slice(0, alts).includes(r) ? r : ""));
+  S.dudas = fit(S.dudas, false);
+  S.clave = fit(S.clave, () => ({ r: "", eje: "", tema: "" }));
+}
+
+/* =====================================================================
+   NAVEGACIÓN
+   ===================================================================== */
+const VIEWS = ["hoja", "clave", "resultados", "historial"];
+function show(v) {
+  if (!VIEWS.includes(v)) v = "hoja";
+  VIEWS.forEach(x => { $("#view-" + x).hidden = x !== v; $("#tab-" + x).setAttribute("aria-current", x === v ? "page" : "false"); });
+  $("#dock").hidden = v !== "hoja";
+  if (v === "clave") renderKey();
+  if (v === "resultados") renderResults();
+  if (v === "historial") renderHistory();
+  if (location.hash.slice(1) !== v) history.replaceState(null, "", "#" + v);
+  window.scrollTo(0, 0);
+}
+$$(".tab").forEach(b => b.addEventListener("click", () => show(b.dataset.view)));
+document.addEventListener("click", e => { const g = e.target.closest("[data-goto]"); if (g) show(g.dataset.goto); });
+window.addEventListener("hashchange", () => show(location.hash.slice(1)));
+
+/* modal y toast propios */
+function ask(title, text, okLabel = "Aceptar", danger = false) {
+  return new Promise(res => {
+    const m = $("#modal"); $("#modal-title").textContent = title; $("#modal-text").innerHTML = text;
+    const ok = $("#modal-ok"); ok.textContent = okLabel; ok.className = "btn " + (danger ? "danger" : "primary");
+    m.hidden = false; ok.focus();
+    const done = v => { m.hidden = true; ok.onclick = null; $("#modal-cancel").onclick = null; res(v); };
+    ok.onclick = () => done(true); $("#modal-cancel").onclick = () => done(false);
+    m.onclick = e => { if (e.target === m) done(false); };
+  });
+}
+let toastT;
+function toast(t) { const el = $("#toast"); el.textContent = t; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => (el.hidden = true), 2400); }
+
+/* =====================================================================
+   HOJA DE RESPUESTAS
+   ===================================================================== */
+function fillPruebaSelect() {
+  $("#cfg-prueba").innerHTML = Object.entries(PRUEBAS).map(([k, p]) =>
+    `<option value="${k}">${esc(p.nombre)}${k !== "OTRA" ? ` · ${p.n} preguntas` : ""}</option>`).join("");
+}
+function renderConfig() {
+  $("#cfg-prueba").value = S.prueba;
+  $("#cfg-nombre").value = S.nombre;
+  $("#cfg-fecha").value = S.fecha;
+  $("#cfg-custom").hidden = S.prueba !== "OTRA";
+  $("#cfg-n").value = S.n; $("#cfg-alts").value = String(S.alts);
+  $("#sh-prueba").textContent = P().nombre;
+  $("#sh-nombre").textContent = S.nombre || "Sin nombre";
+  $("#sh-fecha").textContent = S.fecha ? S.fecha.split("-").reverse().join("/") : "—";
+}
+function buildSheet() {
+  const n = S.n, alts = LETTERS.slice(0, S.alts);
+  const nCols = Math.max(1, Math.ceil(n / 15));
+  const per = Math.ceil(n / nCols);
+  let html = "";
+  for (let c = 0; c < nCols; c++) {
+    html += `<div class="col">`;
+    for (let i = c * per; i < Math.min(n, (c + 1) * per); i++) {
+      const sep = ((i + 1) % 5 === 0) && i !== Math.min(n, (c + 1) * per) - 1;
+      html += `<div class="q${sep ? " sep" : ""}" data-q="${i}" tabindex="0" aria-label="Pregunta ${i + 1}">
+        <span class="qn">${i + 1}</span><span class="bubs">${[...alts].map(a =>
+          `<button type="button" class="bub" data-a="${a}" tabindex="-1" aria-label="Pregunta ${i + 1}, alternativa ${a}" aria-pressed="false">${a}</button>`).join("")}</span>
+        <button type="button" class="flag" tabindex="-1" title="Marcar como duda" aria-label="Duda en pregunta ${i + 1}" aria-pressed="false">?</button></div>`;
+    }
+    html += `</div>`;
+  }
+  $("#cols").innerHTML = html;
+  paintSheet();
+}
+function paintSheet() {
+  const review = S.submitted && S.result;
+  $("#sheet").classList.toggle("review", !!review);
+  $("#review-legend").hidden = !review;
+  $$("#cols .q").forEach(row => {
+    const i = +row.dataset.q, r = S.resp[i], k = S.clave[i]?.r;
+    $$(".bub", row).forEach(b => {
+      b.setAttribute("aria-pressed", String(b.dataset.a === r));
+      b.classList.toggle("key", !!review && b.dataset.a === k);
+    });
+    $(".flag", row).setAttribute("aria-pressed", String(!!S.dudas[i]));
+    row.classList.remove("right", "wrong", "omit");
+    if (review && k) row.classList.add(!r ? "omit" : r === k ? "right" : "wrong");
+  });
+  updateProgress();
+}
+function updateProgress() {
+  const done = S.resp.filter(Boolean).length, d = S.dudas.filter(Boolean).length;
+  $("#dock-txt").innerHTML = `Respondidas <b>${done}</b> de <b>${S.n}</b>${d ? ` · Dudas <b>${d}</b>` : ""}${S.submitted ? ` · <span class="chip good">Enviada</span>` : ""}`;
+  $("#dock-bar").style.width = (100 * done / S.n) + "%";
+  $("#sh-count").textContent = `${done} respondidas · ${S.n - done} en blanco`;
+  $("#btn-send").textContent = S.submitted ? "Ver resultados" : "Enviar respuestas";
+  $("#btn-clear").textContent = S.submitted ? "Editar respuestas" : "Limpiar hoja";
+  const tabRes = $("#tab-resultados");
+  tabRes.innerHTML = "Resultados" + (S.submitted ? '<span class="dot" aria-hidden="true"></span>' : "");
+  const kc = S.clave.filter(c => c.r).length;
+  $("#tab-clave").innerHTML = "Clave" + (kc === S.n ? '<span class="dot" aria-hidden="true"></span>' : "");
+}
+function mark(i, a) {
+  if (S.submitted) { toast("La hoja ya fue enviada. Usa “Editar respuestas” para cambiarla."); return; }
+  S.resp[i] = S.resp[i] === a ? "" : a;
+  persist(); paintRow(i);
+}
+function paintRow(i) {
+  const row = $(`#cols .q[data-q="${i}"]`); if (!row) return;
+  $$(".bub", row).forEach(b => b.setAttribute("aria-pressed", String(b.dataset.a === S.resp[i])));
+  $(".flag", row).setAttribute("aria-pressed", String(!!S.dudas[i]));
+  updateProgress();
+}
+$("#cols").addEventListener("click", e => {
+  const row = e.target.closest(".q"); if (!row) return;
+  const i = +row.dataset.q;
+  const b = e.target.closest(".bub");
+  if (b) { mark(i, b.dataset.a); row.focus({ preventScroll: true }); return; }
+  if (e.target.closest(".flag")) {
+    if (S.submitted) return;
+    S.dudas[i] = !S.dudas[i]; persist(); paintRow(i);
+  }
+});
+$("#cols").addEventListener("keydown", e => {
+  const row = e.target.closest(".q"); if (!row) return;
+  const i = +row.dataset.q, key = e.key.toUpperCase();
+  const go = j => { const r = $(`#cols .q[data-q="${Math.max(0, Math.min(S.n - 1, j))}"]`); r && r.focus(); };
+  if (LETTERS.slice(0, S.alts).includes(key) && key.length === 1) { e.preventDefault(); const was = S.resp[i]; mark(i, key); if (!S.submitted && was !== key) go(i + 1); }
+  else if (e.key === "ArrowDown" || e.key === "Enter") { e.preventDefault(); go(i + 1); }
+  else if (e.key === "ArrowUp") { e.preventDefault(); go(i - 1); }
+  else if ((e.key === "Backspace" || e.key === "Delete") && !S.submitted) { e.preventDefault(); S.resp[i] = ""; persist(); paintRow(i); }
+  else if (e.key === "?" && !S.submitted) { e.preventDefault(); S.dudas[i] = !S.dudas[i]; persist(); paintRow(i); }
+});
+
+$("#cfg-prueba").addEventListener("change", async e => {
+  const v = e.target.value;
+  const hasData = S.resp.some(Boolean) || S.clave.some(c => c.r);
+  if (hasData && !(await ask("¿Cambiar de prueba?", "Se borrarán las respuestas y la clave cargadas en la hoja actual. Tus resultados guardados en el historial no se pierden.", "Cambiar prueba", true))) {
+    e.target.value = S.prueba; return;
+  }
+  const nombre = S.nombre, fecha = S.fecha;
+  S = blankState(v); S.nombre = nombre; S.fecha = fecha;
+  persist(); renderConfig(); buildSheet(); resetTimerUI();
+});
+$("#cfg-nombre").addEventListener("input", e => { S.nombre = e.target.value; persist(); $("#sh-nombre").textContent = S.nombre || "Sin nombre"; });
+$("#cfg-fecha").addEventListener("change", e => { S.fecha = e.target.value; persist(); renderConfig(); });
+$("#cfg-n").addEventListener("change", e => { resize(+e.target.value || 1, S.alts); persist(); renderConfig(); buildSheet(); });
+$("#cfg-alts").addEventListener("change", e => { resize(S.n, +e.target.value); persist(); buildSheet(); });
+
+$("#btn-clear").addEventListener("click", async () => {
+  if (S.submitted) {
+    if (!(await ask("¿Editar respuestas?", "La hoja volverá a quedar abierta para modificarla. Al enviarla de nuevo se recalcularán los resultados y se actualizará el registro en el historial."))) return;
+    S.submitted = false; persist(); paintSheet(); return;
+  }
+  if (!S.resp.some(Boolean) && !S.dudas.some(Boolean)) return;
+  if (!(await ask("¿Limpiar la hoja?", "Se borrarán todas tus marcas y dudas. La clave se mantiene.", "Limpiar", true))) return;
+  S.resp = Array(S.n).fill(""); S.dudas = Array(S.n).fill(false); persist(); paintSheet();
+});
+
+$("#btn-send").addEventListener("click", async () => {
+  if (S.submitted) { show("resultados"); return; }
+  const kc = S.clave.filter(c => c.r).length;
+  if (kc === 0) {
+    if (await ask("Falta la clave", "Para corregir necesito la clave del ensayo. Súbela o pégala en la pestaña Clave; tus respuestas quedan guardadas.", "Cargar clave")) show("clave");
+    return;
+  }
+  const blanks = S.resp.filter(r => !r).length;
+  let txt = "";
+  if (kc < S.n) txt += `La clave tiene ${kc} de ${S.n} preguntas; solo se corregirán esas. `;
+  if (blanks) txt += `Tienes <b>${blanks}</b> pregunta${blanks > 1 ? "s" : ""} en blanco. En la PAES las respuestas incorrectas no descuentan puntaje, así que conviene responderlas todas. `;
+  if (txt && !(await ask("¿Enviar respuestas?", txt, "Enviar igual"))) return;
+  submit();
+});
+
+/* =====================================================================
+   CRONÓMETRO
+   ===================================================================== */
+let tickT = null;
+function elapsedMs() { return S.timer.acc + (S.timer.start ? Date.now() - S.timer.start : 0); }
+function fmt(ms) { const s = Math.floor(ms / 1000); return [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60].map(x => String(x).padStart(2, "0")).join(":"); }
+function tick() {
+  const ms = elapsedMs(), lim = P().min * 60000;
+  $("#timer-txt").textContent = fmt(ms);
+  $("#timer").classList.toggle("over", lim > 0 && ms > lim);
+  $("#timer").title = lim ? `Tiempo oficial de la prueba: ${Math.floor(P().min / 60)} h ${P().min % 60 ? (P().min % 60) + " min" : ""}` : "Cronómetro";
+}
+function resetTimerUI() {
+  clearInterval(tickT); tickT = null;
+  $("#timer-btn").textContent = S.timer.start ? "Pausar" : (S.timer.acc ? "Seguir" : "Iniciar");
+  if (S.timer.start) tickT = setInterval(tick, 1000);
+  tick();
+}
+$("#timer-btn").addEventListener("click", () => {
+  if (S.timer.start) { S.timer.acc += Date.now() - S.timer.start; S.timer.start = null; }
+  else S.timer.start = Date.now();
+  persist(); resetTimerUI();
+});
+
+/* =====================================================================
+   CLAVE
+   ===================================================================== */
+function matchEje(txt) {
+  const t = norm(txt); if (!t) return "";
+  const ejes = P().ejes;
+  for (const e of ejes) if (norm(e.nombre) === t) return e.nombre;
+  for (const e of ejes) if (norm(e.nombre).startsWith(t) || t.startsWith(norm(e.nombre))) return e.nombre;
+  let best = null, bestScore = 0;
+  for (const e of ejes) {
+    let sc = 0;
+    for (const a of e.alias) if (t === a) sc += 10; else if (t.includes(a) || (a.length >= 4 && a.startsWith(t) && t.length >= 3)) sc += a.length;
+    if (sc > bestScore) { bestScore = sc; best = e; }
+  }
+  if (best) return best.nombre;
+  // eje desconocido: se conserva como eje personalizado (con mayúscula inicial)
+  const clean = String(txt).trim();
+  return clean.charAt(0).toUpperCase() + clean.slice(1);
+}
+function inferEjeFromTema(tema) {
+  const t = norm(tema); if (!t) return "";
+  let best = null, bestScore = 0;
+  for (const e of P().ejes) {
+    let sc = 0;
+    for (const c of e.contenidos) { const cn = norm(c); if (cn === t) sc += 50; else if (cn.includes(t) || t.includes(cn)) sc += 20; }
+    for (const a of e.alias) if (a.length >= 4 && t.includes(a)) sc += a.length;
+    if (sc > bestScore) { bestScore = sc; best = e; }
+  }
+  return best ? best.nombre : "";
+}
+function parseKey(text) {
+  const alts = LETTERS.slice(0, S.alts);
+  const out = new Map(); const errors = [];
+  const raw = String(text || "").replace(/\r/g, "").trim();
+  if (!raw) return { out, errors: ["No hay texto para importar."] };
+  // 1) solo letras: "BDACB..." o "B D A C"
+  if (!/\d/.test(raw)) {
+    const letters = raw.toUpperCase().replace(/[^A-E]/g, "");
+    [...letters].forEach((l, i) => { if (i < S.n) out.set(i, { r: l }); });
+    if (letters.length > S.n) errors.push(`Venían ${letters.length} letras; se usaron las primeras ${S.n}.`);
+    [...letters].forEach((l, i) => { if (!alts.includes(l) && i < S.n) errors.push(`Pregunta ${i + 1}: “${l}” no es una alternativa válida.`); });
+    return { out, errors };
+  }
+  const lines = raw.split("\n").map(l => l.trim()).filter(Boolean);
+  for (const line of lines) {
+    const cells = line.split(/\t|;|\|/).length > 1 ? line.split(/\t|;|\|/) : line.split(",");
+    const c0 = (cells[0] || "").trim();
+    // 2) línea con columnas: num, letra, eje, contenido
+    const mNum = c0.match(/^(\d{1,3})\s*[-.):°º]?\s*([A-Ea-e])?$/);
+    if (mNum && (mNum[2] || cells.length > 1)) {
+      const q = +mNum[1] - 1;
+      let letter = mNum[2], rest = cells.slice(1);
+      if (!letter) { letter = (rest.shift() || "").trim(); }
+      letter = letter.toUpperCase().replace(/[^A-E]/g, "");
+      if (q < 0 || q >= S.n) { errors.push(`Línea “${line.slice(0, 40)}”: la pregunta ${q + 1} no existe en esta prueba (${S.n} preguntas).`); continue; }
+      if (!letter || !alts.includes(letter)) { errors.push(`Pregunta ${q + 1}: alternativa “${letter || "vacía"}” no válida.`); continue; }
+      const ejeTxt = (rest[0] || "").trim(), tema = rest.slice(1).join(", ").trim();
+      out.set(q, { r: letter, ejeTxt, tema });
+      continue;
+    }
+    // 3) pares en línea: "1-B 2-C 3)A"
+    const pairs = [...line.matchAll(/(\d{1,3})\s*[-.):°º=]?\s*([A-Ea-e])(?![a-z])/g)];
+    if (pairs.length) {
+      for (const p of pairs) {
+        const q = +p[1] - 1, l = p[2].toUpperCase();
+        if (q < 0 || q >= S.n) { errors.push(`La pregunta ${q + 1} no existe en esta prueba.`); continue; }
+        if (!alts.includes(l)) { errors.push(`Pregunta ${q + 1}: alternativa “${l}” no válida.`); continue; }
+        out.set(q, { r: l });
+      }
+      continue;
+    }
+    if (out.size === 0 && /[a-z]/i.test(line)) continue; // encabezado
+    errors.push(`No entendí la línea “${line.slice(0, 50)}”.`);
+  }
+  return { out, errors };
+}
+function applyParsed(out) {
+  for (const [q, v] of out) {
+    const c = S.clave[q];
+    c.r = v.r;
+    if (v.ejeTxt !== undefined) {
+      c.tema = v.tema || "";
+      c.eje = v.ejeTxt ? matchEje(v.ejeTxt) : (c.tema ? inferEjeFromTema(c.tema) : c.eje);
+    }
+  }
+}
+$("#key-import").addEventListener("click", () => importKey($("#key-text").value));
+function importKey(text) {
+  const { out, errors } = parseKey(text);
+  const msg = $("#key-msg");
+  if (!out.size) { msg.hidden = false; msg.className = "msg err"; msg.innerHTML = esc(errors[0] || "No encontré respuestas en el texto.") + "<br>Revisa el formato de ejemplo."; return; }
+  applyParsed(out);
+  if (S.submitted) S.result = grade();
+  persist(); renderKey(); paintSheet();
+  const total = S.clave.filter(c => c.r).length;
+  const sinEje = S.clave.filter(c => c.r && !c.eje).length;
+  msg.hidden = false; msg.className = "msg " + (errors.length ? "info" : "ok");
+  msg.innerHTML = `Cargadas ${out.size} respuestas (la clave tiene ${total} de ${S.n}).` +
+    (sinEje ? ` ${sinEje} preguntas no tienen eje: asígnalo por rango para recibir recomendaciones por tema.` : "") +
+    (errors.length ? `<br><b>Revisa:</b> ${errors.slice(0, 6).map(esc).join(" · ")}${errors.length > 6 ? ` y ${errors.length - 6} más…` : ""}` : "");
+  toast("Clave cargada");
+}
+$("#key-file").addEventListener("change", e => {
+  const f = e.target.files[0]; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => { $("#key-text").value = rd.result; $("#key-import-hint").textContent = f.name; importKey(rd.result); };
+  rd.onerror = () => toast("No pude leer el archivo");
+  rd.readAsText(f, "utf-8");
+  e.target.value = "";
+});
+$("#key-template").addEventListener("click", async () => {
+  const ej = P().ejes;
+  const lines = ["N°;Clave;Eje;Contenido"];
+  for (let i = 0; i < S.n; i++) lines.push(`${i + 1};;${ej.length ? ej[Math.min(ej.length - 1, Math.floor(i * ej.length / S.n))].nombre : ""};`);
+  const t = lines.join("\n");
+  try { await navigator.clipboard.writeText(t); toast("Plantilla copiada: pégala en Excel o en un .csv"); }
+  catch (err) { $("#key-text").value = t; $("#key-text").select(); toast("Plantilla puesta en el cuadro de texto"); }
+});
+$("#key-clear").addEventListener("click", async () => {
+  if (!S.clave.some(c => c.r || c.eje)) return;
+  if (!(await ask("¿Borrar la clave?", "Se eliminarán las alternativas correctas, ejes y contenidos de esta hoja.", "Borrar clave", true))) return;
+  S.clave = Array.from({ length: S.n }, () => ({ r: "", eje: "", tema: "" })); S.submitted = false; S.result = null;
+  persist(); renderKey(); paintSheet();
+});
+let keyVisible = false;
+$("#key-toggle").addEventListener("click", () => {
+  keyVisible = !keyVisible;
+  $("#key-toggle").textContent = keyVisible ? "Ocultar clave" : "Mostrar clave";
+  $("#key-toggle").setAttribute("aria-expanded", String(keyVisible));
+  renderKey();
+});
+function ejeOptions(sel) {
+  return `<option value="">— Sin eje —</option>` + ejesActuales().map(e => `<option${e === sel ? " selected" : ""}>${esc(e)}</option>`).join("");
+}
+function renderKey() {
+  const kc = S.clave.filter(c => c.r).length;
+  $("#key-meter").innerHTML = `${kc}<small>/${S.n}</small>`;
+  $("#key-title").textContent = kc === 0 ? "Sin clave cargada" : kc === S.n ? "Clave completa" : "Clave incompleta";
+  const sinEje = S.clave.filter(c => c.r && !c.eje).length;
+  $("#key-sub").textContent = kc === 0
+    ? "Sube o pega la clave del ensayo. Puedes hacerlo antes o después de responder: la clave queda oculta hasta que la quieras ver."
+    : `${P().nombre}. ${sinEje ? sinEje + " preguntas sin eje asignado." : "Todas las preguntas cargadas tienen eje."}`;
+  $("#rng-eje").innerHTML = ejesActuales().map(e => `<option>${esc(e)}</option>`).join("") || `<option value="">(escribe los ejes en la clave)</option>`;
+  $("#rng-from").max = $("#rng-to").max = S.n;
+  $("#key-table-wrap").hidden = !keyVisible;
+  $("#key-hidden-note").hidden = keyVisible;
+  if (!keyVisible) return;
+  const alts = LETTERS.slice(0, S.alts);
+  $("#key-tbody").innerHTML = S.clave.map((c, i) => `<tr data-q="${i}">
+    <td class="num">${i + 1}</td>
+    <td><div class="keyalts">${[...alts].map(a => `<button type="button" data-a="${a}" aria-pressed="${c.r === a}" aria-label="Pregunta ${i + 1}: clave ${a}">${a}</button>`).join("")}</div></td>
+    <td><select data-f="eje" aria-label="Eje pregunta ${i + 1}">${ejeOptions(c.eje)}</select></td>
+    <td><input data-f="tema" value="${esc(c.tema)}" list="dl-temas" placeholder="Ej.: ${esc(P().ejes[0]?.contenidos[0] || "Contenido")}" aria-label="Contenido pregunta ${i + 1}"></td></tr>`).join("");
+  let dl = $("#dl-temas"); if (!dl) { dl = document.createElement("datalist"); dl.id = "dl-temas"; document.body.appendChild(dl); }
+  dl.innerHTML = P().ejes.flatMap(e => e.contenidos).map(c => `<option value="${esc(c)}">`).join("");
+}
+$("#key-tbody").addEventListener("click", e => {
+  const b = e.target.closest(".keyalts button"); if (!b) return;
+  const i = +b.closest("tr").dataset.q; const c = S.clave[i];
+  c.r = c.r === b.dataset.a ? "" : b.dataset.a;
+  $$(".keyalts button", b.closest("tr")).forEach(x => x.setAttribute("aria-pressed", String(x.dataset.a === c.r)));
+  if (S.submitted) S.result = grade();
+  persist(); updateProgress();
+  const kc = S.clave.filter(x => x.r).length; $("#key-meter").innerHTML = `${kc}<small>/${S.n}</small>`;
+});
+$("#key-tbody").addEventListener("change", e => {
+  const f = e.target.dataset.f; if (!f) return;
+  const i = +e.target.closest("tr").dataset.q;
+  S.clave[i][f] = e.target.value;
+  if (f === "tema" && !S.clave[i].eje && e.target.value) {
+    const g = inferEjeFromTema(e.target.value);
+    if (g) { S.clave[i].eje = g; $("select", e.target.closest("tr")).innerHTML = ejeOptions(g); }
+  }
+  if (S.submitted) S.result = grade();
+  persist();
+});
+$("#rng-apply").addEventListener("click", () => {
+  const a = Math.max(1, +$("#rng-from").value | 0), b = Math.min(S.n, +$("#rng-to").value | 0), eje = $("#rng-eje").value;
+  if (!eje || b < a) { toast("Revisa el rango"); return; }
+  for (let i = a - 1; i < b; i++) S.clave[i].eje = eje;
+  if (S.submitted) S.result = grade();
+  persist(); renderKey(); toast(`Eje “${eje}” asignado a las preguntas ${a}–${b}`);
+  $("#rng-from").value = b + 1; $("#rng-to").value = Math.min(S.n, b + 10);
+});
+
+/* =====================================================================
+   CORRECCIÓN
+   ===================================================================== */
+function grade() {
+  const items = [];
+  for (let i = 0; i < S.n; i++) {
+    const k = S.clave[i]; if (!k.r) continue;
+    const r = S.resp[i];
+    items.push({ q: i + 1, r, k: k.r, eje: k.eje || "Sin eje asignado", tema: k.tema || "", duda: !!S.dudas[i],
+      st: !r ? "omit" : r === k.r ? "ok" : "bad" });
+  }
+  const total = items.length, ok = items.filter(x => x.st === "ok").length, bad = items.filter(x => x.st === "bad").length, omit = total - ok - bad;
+  const ejes = {};
+  for (const it of items) { const e = (ejes[it.eje] ||= { t: 0, ok: 0, bad: 0, omit: 0 }); e.t++; e[it.st === "ok" ? "ok" : it.st]++; }
+  return { items, total, ok, bad, omit, pct: total ? Math.round(1000 * ok / total) / 10 : 0, ejes, ms: elapsedMs() };
+}
+function submit() {
+  if (S.timer.start) { S.timer.acc += Date.now() - S.timer.start; S.timer.start = null; resetTimerUI(); }
+  S.result = grade(); S.submitted = true;
+  // historial (si se reenvía la misma hoja, actualiza el registro)
+  S.histId ||= "h" + Date.now().toString(36);
+  const rec = { id: S.histId, prueba: S.prueba, nombre: S.nombre || "Sin nombre", fecha: S.fecha || today(), total: S.result.total,
+    ok: S.result.ok, bad: S.result.bad, omit: S.result.omit, pct: S.result.pct, min: Math.round(S.result.ms / 60000),
+    ejes: Object.fromEntries(Object.entries(S.result.ejes).map(([k, v]) => [k, { t: v.t, ok: v.ok }])) };
+  const ix = H.findIndex(h => h.id === rec.id);
+  if (ix >= 0) H[ix] = rec; else H.push(rec);
+  save(LS_HIST, H); persist(); paintSheet(); show("resultados");
+}
+function level(p) { return p >= 85 ? "good" : p >= 60 ? "warn" : "bad"; }
+function levelLabel(p) { return p >= 85 ? "Dominado" : p >= 60 ? "En desarrollo" : "Prioritario"; }
+
+let resFilter = "errores";
+function renderResults() {
+  const R = S.submitted && S.result;
+  $("#res-empty").hidden = !!R; $("#res-body").hidden = !R;
+  if (!R) return;
+  const Pz = P();
+  const ejesKB = Object.fromEntries(Pz.ejes.map(e => [e.nombre, e]));
+  const prev = H.filter(h => h.prueba === S.prueba && h.id !== S.histId).sort((a, b) => (a.fecha + a.id).localeCompare(b.fecha + b.id)).pop();
+  const eList = Object.entries(R.ejes).map(([name, v]) => ({ name, ...v, pct: Math.round(100 * v.ok / v.t), miss: v.bad + v.omit }))
+    .sort((a, b) => b.miss - a.miss || a.pct - b.pct);
+
+  /* --- resumen --- */
+  const delta = prev ? R.ok - prev.ok : null;
+  let html = `<div class="panel-head" style="margin:0"><div><h2>Resultados · ${esc(Pz.nombre)}</h2>
+      <p class="hint">${esc(S.nombre || "Ensayo sin nombre")} · ${esc((S.fecha || "").split("-").reverse().join("/"))}${R.ms > 60000 ? ` · Tiempo usado: <span class="mono">${fmt(R.ms)}</span>` : ""}</p></div>
+      <div class="row"><button class="btn small" data-goto="hoja" type="button">Ver corrección en la hoja</button><button class="btn small" id="btn-new" type="button">Nuevo ensayo</button></div></div>
+    <div class="summary">
+      <div class="stat hero"><span class="k">Correctas</span><span class="v mono">${R.ok}<span style="font-size:1.3rem;opacity:.7">/${R.total}</span></span>
+        <span class="s">${R.pct.toLocaleString("es-CL")} % de logro${delta !== null ? ` · <b>${delta >= 0 ? "+" : ""}${delta}</b> vs. ensayo anterior` : ""}</span></div>
+      <div class="stat"><span class="k">Incorrectas</span><span class="v mono" style="color:var(--bad)">${R.bad}</span><span class="s">${R.total ? Math.round(100 * R.bad / R.total) : 0} % del total</span></div>
+      <div class="stat"><span class="k">Omitidas</span><span class="v mono" style="color:var(--warn)">${R.omit}</span><span class="s">${R.omit ? "Puntos que regalaste" : "Respondiste todo"}</span></div>
+      <div class="stat"><span class="k">Dudas acertadas</span><span class="v mono">${R.items.filter(x => x.duda && x.st === "ok").length}<span style="font-size:1.1rem;color:var(--ink-3)">/${R.items.filter(x => x.duda).length}</span></span><span class="s">Preguntas que marcaste con ?</span></div>
+    </div>
+    <p class="hint">El puntaje PAES (escala 100–1000) se obtiene con una tabla de conversión que DEMRE publica para cada proceso, por lo que aquí se muestra el % de logro${Pz.n > 0 && S.prueba !== "OTRA" ? ". En la prueba oficial algunas preguntas son experimentales y no puntúan" : ""}.</p>`;
+
+  /* --- por eje --- */
+  html += `<div class="panel"><div class="panel-head"><h3>Desempeño por eje temático</h3><span class="hint">Línea de referencia: 85 % (dominado) y 60 % (en desarrollo)</span></div><div class="meters">` +
+    eList.map(e => {
+      const pv = prev && prev.ejes[e.name] ? Math.round(100 * prev.ejes[e.name].ok / prev.ejes[e.name].t) : null;
+      const d = pv === null ? "" : `<span class="${e.pct - pv >= 0 ? "delta-up" : "delta-down"}" title="Ensayo anterior: ${pv} %">${e.pct - pv >= 0 ? "▲" : "▼"}${Math.abs(e.pct - pv)}</span>`;
+      return `<div class="meter" title="${esc(e.name)}: ${e.ok} correctas, ${e.bad} incorrectas, ${e.omit} omitidas de ${e.t}">
+        <div class="name">${esc(e.name)}<small>${e.ok} de ${e.t} correctas${e.miss ? ` · ${e.bad} incorrectas${e.omit ? `, ${e.omit} omitidas` : ""}` : ""}</small></div>
+        <div class="track"><i class="${level(e.pct)}" style="width:${e.pct}%"></i><span class="tick" style="left:60%"></span><span class="tick" style="left:85%"></span></div>
+        <div class="right"><b>${e.pct} %</b>${d}<span class="chip ${level(e.pct)}">${levelLabel(e.pct)}</span></div></div>`;
+    }).join("") + `</div></div>`;
+
+  /* --- plan de mejora --- */
+  const focus = eList.filter(e => e.miss > 0);
+  const top2 = focus.slice(0, 2);
+  const gain = top2.reduce((s, e) => s + Math.ceil(e.miss / 2), 0) + Math.ceil(R.omit / 2 * (R.total ? R.ok / R.total : 0));
+  html += `<div class="panel"><div class="panel-head"><h3>Plan de mejora para el próximo ensayo</h3>
+    ${focus.length ? `<span class="chip neutral">Meta: +${gain} correctas → ${Math.min(100, Math.round(100 * (R.ok + gain) / R.total))} %</span>` : ""}</div>`;
+  if (!focus.length) html += `<p>Respondiste todo correctamente. Mantén la práctica con ensayos cronometrados y sube la dificultad.</p>`;
+  else {
+    html += `<p class="hint" style="margin-bottom:12px">Ordenado por impacto: primero los ejes donde perdiste más preguntas. Si recuperas la mitad de los errores de tus ${top2.length === 1 ? "eje prioritario" : "dos ejes prioritarios"}, sumas ${gain} respuestas correctas.</p><div class="plan">`;
+    html += focus.map((e, idx) => {
+      const kb = ejesKB[e.name];
+      const fails = R.items.filter(x => x.eje === e.name && x.st !== "ok");
+      const temas = {};
+      fails.forEach(f => { const t = f.tema || ""; (temas[t] ||= []).push(f.q); });
+      const temaEntries = Object.entries(temas).filter(([t]) => t);
+      const sinTema = temas[""] || [];
+      const tips = (kb ? kb.tips : GENERIC_TIPS).slice(0, e.pct < 60 ? 4 : 3);
+      const pr = e.pct < 60 ? ["p-alta", "Prioridad alta", "bad"] : e.pct < 85 ? ["p-media", "Prioridad media", "warn"] : ["p-ok", "Afinar detalles", "good"];
+      return `<div class="card ${pr[0]}">
+        <div class="card-head"><h3>${idx + 1}. ${esc(e.name)}</h3><span class="chip ${pr[2]}">${pr[1]} · ${e.miss} pregunta${e.miss > 1 ? "s" : ""} perdida${e.miss > 1 ? "s" : ""}</span></div>
+        ${temaEntries.length ? `<div><div class="sub">Contenidos a repasar</div><ul>${temaEntries.map(([t, qs]) => `<li><b>${esc(t)}</b> <span class="muted mono">(preg. ${qs.join(", ")})</span></li>`).join("")}</ul></div>` : ""}
+        ${sinTema.length ? `<div><div class="sub">${temaEntries.length ? "Otras preguntas a revisar" : "Preguntas a revisar"}</div><div class="qlist">${sinTema.map(q => `<span>${q}</span>`).join("")}</div></div>` : ""}
+        ${!temaEntries.length && kb ? `<div class="hint">Contenidos de este eje: ${kb.contenidos.map(esc).join(" · ")}. Agrega el contenido de cada pregunta en la clave para un diagnóstico más fino.</div>` : ""}
+        <div><div class="sub">Cómo mejorar</div><ul>${tips.map(t => `<li>${esc(t)}</li>`).join("")}</ul></div>
+      </div>`;
+    }).join("");
+    html += `</div>`;
+  }
+  html += `</div>`;
+
+  /* --- hábitos de prueba --- */
+  const habits = [];
+  if (R.omit) habits.push(["bad", "!", `Dejaste <b>${R.omit}</b> pregunta${R.omit > 1 ? "s" : ""} en blanco. En la PAES una respuesta incorrecta no descuenta: descarta las alternativas que puedas y marca siempre. Al azar, con 4 alternativas, recuperarías en promedio ${Math.round(R.omit / 4 * 10) / 10}.`]);
+  const dd = R.items.filter(x => x.duda);
+  if (dd.length >= 3) {
+    const dok = dd.filter(x => x.st === "ok").length, rate = dok / dd.length;
+    habits.push(rate < 0.4 ? ["warn", "?", `De tus <b>${dd.length}</b> dudas acertaste solo ${dok}. Esas preguntas muestran contenidos que aún no dominas: inclúyelas en tu repaso aunque las hayas acertado.`]
+      : rate > 0.7 ? ["good", "?", `Acertaste ${dok} de tus ${dd.length} dudas: tu intuición es buena. Confía más en tu primera elección y no gastes demasiado tiempo dudando.`]
+      : ["info", "?", `Acertaste ${dok} de ${dd.length} dudas. Repasa las preguntas que marcaste con ? aunque estén correctas: no las dominabas del todo.`]);
+  } else if (!dd.length && R.bad > 3) habits.push(["info", "?", `Usa el botón <b>?</b> para marcar las preguntas en que dudas. En el próximo ensayo sabrás si tus errores son por desconocimiento o por inseguridad.`]);
+  if (R.items.length >= 20) {
+    const cut = Math.floor(R.items.length * 2 / 3);
+    const a = R.items.slice(0, cut), b = R.items.slice(cut);
+    const ea = a.filter(x => x.st !== "ok").length / a.length, eb = b.filter(x => x.st !== "ok").length / b.length;
+    if (eb - ea >= 0.15) habits.push(["warn", "⏱", `Fallas bastante más en el último tercio de la prueba (${Math.round(eb * 100)} % de errores vs. ${Math.round(ea * 100)} % antes). Puede ser cansancio o falta de tiempo: practica ensayos completos con cronómetro y no te quedes pegado más de 3 minutos en una pregunta.`]);
+  }
+  const lim = Pz.min * 60000;
+  if (lim && R.ms > lim) habits.push(["bad", "⏱", `Usaste <span class="mono">${fmt(R.ms)}</span>, ${Math.round((R.ms - lim) / 60000)} min más que el tiempo oficial (${fmt(lim)}). Entrena con un ritmo objetivo de ${(Pz.min / Pz.n).toFixed(1).replace(".", ",")} min por pregunta.`]);
+  else if (lim && R.ms > 5 * 60000) habits.push(["good", "⏱", `Terminaste en <span class="mono">${fmt(R.ms)}</span>, dentro del tiempo oficial (${fmt(lim)}).${R.ms < lim * 0.75 && R.bad > 5 ? " Te sobró tiempo: úsalo para revisar las preguntas marcadas con duda." : ""}`]);
+  else if (lim) habits.push(["info", "⏱", `Usa el cronómetro de la barra superior en el próximo ensayo para medir tu ritmo (tiempo oficial: ${fmt(lim)}).`]);
+  (Pz.general || []).forEach(g => habits.push(["info", "→", esc(g)]));
+  if (prev) {
+    const better = eList.filter(e => prev.ejes[e.name]).map(e => ({ n: e.name, d: e.pct - Math.round(100 * prev.ejes[e.name].ok / prev.ejes[e.name].t) })).sort((a, b) => b.d - a.d);
+    if (better.length) habits.push([delta >= 0 ? "good" : "warn", delta >= 0 ? "▲" : "▼", `Respecto a tu ensayo anterior de ${esc(Pz.corto)} (${esc(prev.nombre)}): ${delta >= 0 ? "+" : ""}${delta} correctas. Mejor avance en <b>${esc(better[0].n)}</b> (${better[0].d >= 0 ? "+" : ""}${better[0].d} pts)${better.length > 1 && better[better.length - 1].d < 0 ? `; retroceso en <b>${esc(better[better.length - 1].n)}</b> (${better[better.length - 1].d} pts)` : ""}.`]);
+  }
+  html += `<div class="panel"><div class="panel-head"><h3>Estrategia y hábitos de prueba</h3></div><div class="habits">` +
+    habits.map(h => `<div class="habit"><span class="ic ${h[0]}" aria-hidden="true">${h[1]}</span><p>${h[2]}</p></div>`).join("") + `</div></div>`;
+
+  /* --- detalle --- */
+  const counts = { errores: R.bad + R.omit, incorrectas: R.bad, omitidas: R.omit, todas: R.total };
+  const rows = R.items.filter(x => resFilter === "todas" || (resFilter === "errores" && x.st !== "ok") || (resFilter === "incorrectas" && x.st === "bad") || (resFilter === "omitidas" && x.st === "omit"));
+  html += `<div class="panel"><div class="panel-head"><h3>Detalle pregunta por pregunta</h3>
+    <div class="filters" id="res-filters">${Object.entries(counts).map(([k, c]) => `<button type="button" data-f="${k}" aria-pressed="${resFilter === k}">${k[0].toUpperCase() + k.slice(1)} (${c})</button>`).join("")}</div></div>
+    ${rows.length ? `<div class="table-wrap"><table><thead><tr><th>N°</th><th>Tu respuesta</th><th>Correcta</th><th>Eje</th><th>Contenido</th><th>Estado</th></tr></thead><tbody>` +
+      rows.map(x => `<tr><td class="num">${x.q}</td>
+        <td>${x.r ? `<span class="ans ${x.st === "ok" ? "k" : "u-bad"}">${x.r}</span>` : `<span class="ans u-omit">—</span>`}</td>
+        <td><span class="ans k">${x.k}</span></td><td>${esc(x.eje)}</td><td>${esc(x.tema) || '<span class="muted">—</span>'}</td>
+        <td>${x.st === "ok" ? '<span class="chip good">Correcta</span>' : x.st === "bad" ? '<span class="chip bad">Incorrecta</span>' : '<span class="chip warn">Omitida</span>'}${x.duda ? ' <span class="chip neutral" title="La marcaste con duda">Duda</span>' : ""}</td></tr>`).join("") +
+      `</tbody></table></div>` : `<p class="hint">No hay preguntas en esta categoría.</p>`}</div>`;
+
+  $("#res-body").innerHTML = html;
+  $("#res-filters").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; resFilter = b.dataset.f; renderResults(); });
+  $("#btn-new").addEventListener("click", newEssay);
+}
+async function newEssay() {
+  if (!(await ask("¿Comenzar un nuevo ensayo?", "Se limpiará la hoja, la clave y el cronómetro. Este resultado ya quedó guardado en el Historial.", "Nuevo ensayo"))) return;
+  const pr = S.prueba, n = S.n, alts = S.alts;
+  S = blankState(pr); if (pr === "OTRA") resize(n, alts);
+  persist(); renderConfig(); buildSheet(); resetTimerUI(); show("hoja");
+}
+
+/* =====================================================================
+   HISTORIAL
+   ===================================================================== */
+function renderHistory() {
+  const body = $("#hist-body");
+  if (!H.length) {
+    body.innerHTML = `<div class="panel empty"><div class="ring" aria-hidden="true"></div><h2>Tu historial está vacío</h2>
+      <p class="hint" style="max-width:50ch">Cada vez que envíes una hoja, el resultado quedará guardado aquí para que veas tu evolución por prueba y por eje.</p>
+      <button class="btn" data-goto="hoja" type="button">Ir a la hoja</button></div>`;
+    return;
+  }
+  const groups = {};
+  H.forEach(h => (groups[h.prueba] ||= []).push(h));
+  let html = `<div class="panel-head" style="margin:0"><h2>Historial de ensayos</h2><button class="btn danger small" id="hist-clear" type="button">Borrar historial</button></div>
+    <p class="hint">Guardado solo en este navegador y dispositivo.</p>`;
+  for (const [pk, list] of Object.entries(groups)) {
+    const Pz = PRUEBAS[pk] || { nombre: pk };
+    list.sort((a, b) => (a.fecha + a.id).localeCompare(b.fecha + b.id));
+    const best = Math.max(...list.map(h => h.pct)), last = list[list.length - 1];
+    const ejeNames = [...new Set(list.flatMap(h => Object.keys(h.ejes)))];
+    html += `<div class="panel hist-group">
+      <div class="panel-head" style="margin:0"><h3>${esc(Pz.nombre)}</h3><span class="hint">${list.length} ensayo${list.length > 1 ? "s" : ""} · Mejor: <b class="mono">${String(best).replace(".", ",")} %</b> · Último: <b class="mono">${String(last.pct).replace(".", ",")} %</b></span></div>
+      <div class="hbars" role="img" aria-label="% de logro por ensayo en ${esc(Pz.nombre)}">${list.map(h => `<div class="hbar" title="${esc(h.nombre)} · ${esc(h.fecha.split("-").reverse().join("/"))}: ${h.ok}/${h.total} (${h.pct} %)"><span>${Math.round(h.pct)}</span><i style="height:${Math.max(2, h.pct * 0.8)}px"></i></div>`).join("")}</div>
+      <div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Ensayo</th><th>Correctas</th><th>%</th>${ejeNames.map(e => `<th>${esc(e)}</th>`).join("")}<th>Tiempo</th><th></th></tr></thead><tbody>` +
+      list.slice().reverse().map(h => `<tr><td class="mono">${esc(h.fecha.split("-").reverse().join("/"))}</td><td>${esc(h.nombre)}</td>
+        <td class="mono">${h.ok}/${h.total}</td><td class="mono"><b>${String(h.pct).replace(".", ",")}</b></td>
+        ${ejeNames.map(e => { const v = h.ejes[e]; if (!v) return `<td class="muted">—</td>`; const p = Math.round(100 * v.ok / v.t); return `<td><span class="chip ${level(p)}">${p} %</span></td>`; }).join("")}
+        <td class="mono">${h.min ? h.min + " min" : "—"}</td>
+        <td><button class="btn small danger" data-del="${esc(h.id)}" type="button" aria-label="Eliminar ${esc(h.nombre)}">Eliminar</button></td></tr>`).join("") +
+      `</tbody></table></div></div>`;
+  }
+  body.innerHTML = html;
+  $("#hist-clear").addEventListener("click", async () => {
+    if (!(await ask("¿Borrar todo el historial?", "Se eliminarán todos los resultados guardados. No se puede deshacer.", "Borrar historial", true))) return;
+    H = []; save(LS_HIST, H); renderHistory();
+  });
+}
+$("#hist-body").addEventListener("click", async e => {
+  const b = e.target.closest("[data-del]"); if (!b) return;
+  if (!(await ask("¿Eliminar este ensayo del historial?", "El registro se borrará de forma permanente.", "Eliminar", true))) return;
+  H = H.filter(h => h.id !== b.dataset.del); save(LS_HIST, H); renderHistory();
+});
+
+/* =====================================================================
+   INICIO
+   ===================================================================== */
+fillPruebaSelect();
+renderConfig();
+buildSheet();
+resetTimerUI();
+show(location.hash.slice(1) || "hoja");
+</script>
+</body>
+</html>
