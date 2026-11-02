@@ -6,8 +6,10 @@ Aplicación web (un solo archivo, `index.html`) para responder ensayos PAES en u
 Abre `index.html` en el navegador (o publícalo con GitHub Pages).
 
 1. **Hoja**: elige la prueba (Competencia Lectora, M1, M2, Historia, Ciencias o personalizada) y marca tus respuestas. `?` marca dudas. Incluye cronómetro con el tiempo oficial.
-2. **Clave**: sube un `.csv`/`.txt` o pega la clave. Formato por línea: `número;clave;eje;contenido` (ej.: `1;B;Números;Porcentaje`). También acepta solo la secuencia de letras (`BDACB…`) o pares `1-B 2-D`; los ejes se pueden asignar por rango.
-3. **Enviar respuestas**: resultados, desempeño por eje, contenidos a repasar, consejos y estrategia.
+2. **Clave**: sube el **PDF del clavijero de DEMRE** (claves + tabla de transformación): la app detecta la prueba, la forma, las claves, los ejes, las preguntas piloto y la tabla Puntaje P → Puntaje PAES. También puedes subir un `.csv`/`.txt` o pega la clave. Formato por línea: `número;clave;eje;contenido` (ej.: `1;B;Números;Porcentaje`). También acepta solo la secuencia de letras (`BDACB…`) o pares `1-B 2-D`; los ejes se pueden asignar por rango.
+3. **Enviar respuestas**: puntaje PAES (si hay tabla), resultados, desempeño por eje, contenidos a repasar, consejos y estrategia.
 4. **Historial**: evolución por prueba y eje.
 
 Los datos se guardan en el navegador (localStorage) del dispositivo.
+
+La lectura de PDF usa pdf.js (cdnjs), por lo que requiere conexión a internet la primera vez que se sube un PDF. Los PDF escaneados (imagen) no tienen texto legible; en ese caso, pega la clave y la tabla a mano.

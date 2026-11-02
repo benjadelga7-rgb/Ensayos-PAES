@@ -196,6 +196,14 @@ td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--o
 .keyalts button{width:30px;height:26px;border-radius:6px;border:1px solid var(--line);background:var(--paper);cursor:pointer;font-family:var(--f-mono);font-weight:600;font-size:.8rem;padding:0}
 .keyalts button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .keytable select,.keytable input{border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:5px 7px;font-size:.85rem;width:100%;min-width:150px}
+.pdfdrop{display:flex;gap:16px;align-items:center;flex-wrap:wrap;border:1.5px dashed var(--omr);background:var(--paper)}
+.pdfdrop.over{background:var(--omr-soft)}
+.pdf-icon{width:46px;height:56px;border:1.5px solid var(--omr);border-radius:4px 14px 4px 4px;display:grid;place-items:end center;padding-bottom:8px;font-family:var(--f-mono);font-weight:600;font-size:.72rem;color:var(--omr)}
+.keytable input[type="checkbox"]{width:18px;height:18px;min-width:0;accent-color:var(--accent)}
+.tabgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:4px;font-family:var(--f-mono);font-size:.8rem}
+.tabgrid span{display:flex;justify-content:space-between;gap:6px;padding:2px 8px;border-radius:5px;background:var(--paper-2)}
+.tabgrid span b{color:var(--ink)}
+.tabgrid span i{font-style:normal;color:var(--ink-3)}
 .msg{font-size:.88rem;padding:9px 12px;border-radius:8px}
 .msg.ok{background:var(--good-bg);color:var(--good)}
 .msg.err{background:var(--bad-bg);color:var(--bad)}
@@ -345,11 +353,22 @@ td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--o
       <button class="btn danger small" id="key-clear" type="button">Borrar clave</button>
     </div>
 
+    <div class="panel pdfdrop" id="pdf-drop">
+      <div class="pdf-icon" aria-hidden="true">PDF</div>
+      <div style="flex:1;min-width:220px;display:grid;gap:4px">
+        <h3>Subir clavijero oficial DEMRE (PDF)</h3>
+        <p class="hint">Arrastra aquí el PDF de claves y tabla de transformación, o elígelo desde tu dispositivo. La app lee la prueba, la forma, las alternativas correctas, los ejes, las preguntas que no puntúan y la tabla de puntaje PAES.</p>
+      </div>
+      <label class="btn primary" for="pdf-file" style="cursor:pointer">Elegir PDF</label>
+      <input type="file" id="pdf-file" accept=".pdf,application/pdf" hidden>
+      <div id="pdf-msg" style="flex-basis:100%" hidden></div>
+    </div>
+
     <div class="two">
       <div class="panel" style="display:grid;gap:12px">
         <div class="panel-head" style="margin:0"><h3>Subir o pegar la clave</h3>
           <label class="btn small" for="key-file" style="cursor:pointer">Subir archivo (.csv / .txt)</label>
-          <input type="file" id="key-file" accept=".csv,.txt,.tsv,text/plain,text/csv" hidden>
+          <input type="file" id="key-file" accept=".csv,.txt,.tsv,.pdf,text/plain,text/csv,application/pdf" hidden>
         </div>
         <textarea class="input" id="key-text" spellcheck="false" placeholder="1;B;Números;Porcentaje&#10;2;D;Álgebra y funciones;Función afín&#10;3;A;Geometría;Teorema de Pitágoras&#10;…"></textarea>
         <div class="row">
@@ -384,6 +403,22 @@ td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--o
       </div>
     </div>
 
+    <div class="panel" style="display:grid;gap:12px">
+      <div class="panel-head" style="margin:0">
+        <h3>Tabla de conversión a puntaje PAES</h3>
+        <span id="tab-status" class="chip neutral">Sin tabla</span>
+      </div>
+      <p class="hint" id="tab-sub">Se carga sola desde el PDF de DEMRE. También puedes pegarla: una fila por línea con <b>Puntaje P</b> (correctas que puntúan) y <b>Puntaje PAES</b>, por ejemplo <span class="mono">50;806</span>. Sirve también para la tabla de tu preuniversitario.</p>
+      <div id="tab-preview"></div>
+      <details id="tab-details">
+        <summary class="hint" style="cursor:pointer">Ver o editar la tabla</summary>
+        <div style="display:grid;gap:10px;margin-top:10px">
+          <textarea class="input" id="tab-text" spellcheck="false" placeholder="0;100&#10;1;…&#10;…&#10;60;1000"></textarea>
+          <div class="row"><button class="btn" id="tab-save" type="button">Guardar tabla</button><button class="btn danger small" id="tab-clear" type="button">Borrar tabla</button></div>
+        </div>
+      </details>
+    </div>
+
     <div class="panel">
       <div class="panel-head">
         <h3>Clave pregunta por pregunta</h3>
@@ -392,7 +427,7 @@ td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--o
       <p class="hint" id="key-hidden-note">La clave está oculta para que no veas las respuestas mientras haces el ensayo. También puedes ingresarla aquí a mano.</p>
       <div class="table-wrap keytable" id="key-table-wrap" hidden>
         <table>
-          <thead><tr><th>N°</th><th>Clave</th><th>Eje</th><th>Contenido (opcional)</th></tr></thead>
+          <thead><tr><th>N°</th><th>Clave</th><th>Eje</th><th>Contenido (opcional)</th><th title="Desmarca las preguntas piloto o experimentales, que no cuentan para el puntaje">Puntúa</th></tr></thead>
           <tbody id="key-tbody"></tbody>
         </table>
       </div>
@@ -647,7 +682,7 @@ function norm(s) { return String(s || "").toLowerCase().normalize("NFD").replace
 function blankState(prueba = "M1") {
   const P = PRUEBAS[prueba];
   return { prueba, nombre: "", fecha: today(), n: P.n, alts: P.alts, resp: Array(P.n).fill(""), dudas: Array(P.n).fill(false),
-    clave: Array.from({ length: P.n }, () => ({ r: "", eje: "", tema: "" })), submitted: false, result: null,
+    clave: Array.from({ length: P.n }, () => ({ r: "", eje: "", tema: "", pil: false })), submitted: false, result: null, forma: "", tabla: null,
     timer: { start: null, acc: 0 } };
 }
 let S = load(LS_STATE, null);
@@ -668,7 +703,7 @@ function resize(n, alts) {
   const fit = (arr, fill) => { arr = arr.slice(0, n); while (arr.length < n) arr.push(typeof fill === "function" ? fill() : fill); return arr; };
   S.resp = fit(S.resp, "").map(r => (LETTERS.slice(0, alts).includes(r) ? r : ""));
   S.dudas = fit(S.dudas, false);
-  S.clave = fit(S.clave, () => ({ r: "", eje: "", tema: "" }));
+  S.clave = fit(S.clave, () => ({ r: "", eje: "", tema: "", pil: false }));
 }
 
 /* =====================================================================
@@ -764,7 +799,7 @@ function updateProgress() {
   $("#btn-clear").textContent = S.submitted ? "Editar respuestas" : "Limpiar hoja";
   const tabRes = $("#tab-resultados");
   tabRes.innerHTML = "Resultados" + (S.submitted ? '<span class="dot" aria-hidden="true"></span>' : "");
-  const kc = S.clave.filter(c => c.r).length;
+  const kc = S.clave.filter(c => c.r || c.pil).length;
   $("#tab-clave").innerHTML = "Clave" + (kc === S.n ? '<span class="dot" aria-hidden="true"></span>' : "");
 }
 function mark(i, a) {
@@ -826,7 +861,7 @@ $("#btn-clear").addEventListener("click", async () => {
 
 $("#btn-send").addEventListener("click", async () => {
   if (S.submitted) { show("resultados"); return; }
-  const kc = S.clave.filter(c => c.r).length;
+  const kc = S.clave.filter(c => c.r || c.pil).length;
   if (kc === 0) {
     if (await ask("Falta la clave", "Para corregir necesito la clave del ensayo. Súbela o pégala en la pestaña Clave; tus respuestas quedan guardadas.", "Cargar clave")) show("clave");
     return;
@@ -957,7 +992,7 @@ function importKey(text) {
   applyParsed(out);
   if (S.submitted) S.result = grade();
   persist(); renderKey(); paintSheet();
-  const total = S.clave.filter(c => c.r).length;
+  const total = S.clave.filter(c => c.r || c.pil).length;
   const sinEje = S.clave.filter(c => c.r && !c.eje).length;
   msg.hidden = false; msg.className = "msg " + (errors.length ? "info" : "ok");
   msg.innerHTML = `Cargadas ${out.size} respuestas (la clave tiene ${total} de ${S.n}).` +
@@ -967,6 +1002,7 @@ function importKey(text) {
 }
 $("#key-file").addEventListener("change", e => {
   const f = e.target.files[0]; if (!f) return;
+  if (/\.pdf$/i.test(f.name) || f.type === "application/pdf") { e.target.value = ""; handlePdf(f); return; }
   const rd = new FileReader();
   rd.onload = () => { $("#key-text").value = rd.result; $("#key-import-hint").textContent = f.name; importKey(rd.result); };
   rd.onerror = () => toast("No pude leer el archivo");
@@ -984,7 +1020,7 @@ $("#key-template").addEventListener("click", async () => {
 $("#key-clear").addEventListener("click", async () => {
   if (!S.clave.some(c => c.r || c.eje)) return;
   if (!(await ask("¿Borrar la clave?", "Se eliminarán las alternativas correctas, ejes y contenidos de esta hoja.", "Borrar clave", true))) return;
-  S.clave = Array.from({ length: S.n }, () => ({ r: "", eje: "", tema: "" })); S.submitted = false; S.result = null;
+  S.clave = Array.from({ length: S.n }, () => ({ r: "", eje: "", tema: "", pil: false })); S.submitted = false; S.result = null;
   persist(); renderKey(); paintSheet();
 });
 let keyVisible = false;
@@ -998,7 +1034,7 @@ function ejeOptions(sel) {
   return `<option value="">— Sin eje —</option>` + ejesActuales().map(e => `<option${e === sel ? " selected" : ""}>${esc(e)}</option>`).join("");
 }
 function renderKey() {
-  const kc = S.clave.filter(c => c.r).length;
+  const kc = S.clave.filter(c => c.r || c.pil).length;
   $("#key-meter").innerHTML = `${kc}<small>/${S.n}</small>`;
   $("#key-title").textContent = kc === 0 ? "Sin clave cargada" : kc === S.n ? "Clave completa" : "Clave incompleta";
   const sinEje = S.clave.filter(c => c.r && !c.eje).length;
@@ -1009,13 +1045,15 @@ function renderKey() {
   $("#rng-from").max = $("#rng-to").max = S.n;
   $("#key-table-wrap").hidden = !keyVisible;
   $("#key-hidden-note").hidden = keyVisible;
+  renderTabla();
   if (!keyVisible) return;
   const alts = LETTERS.slice(0, S.alts);
   $("#key-tbody").innerHTML = S.clave.map((c, i) => `<tr data-q="${i}">
     <td class="num">${i + 1}</td>
     <td><div class="keyalts">${[...alts].map(a => `<button type="button" data-a="${a}" aria-pressed="${c.r === a}" aria-label="Pregunta ${i + 1}: clave ${a}">${a}</button>`).join("")}</div></td>
     <td><select data-f="eje" aria-label="Eje pregunta ${i + 1}">${ejeOptions(c.eje)}</select></td>
-    <td><input data-f="tema" value="${esc(c.tema)}" list="dl-temas" placeholder="Ej.: ${esc(P().ejes[0]?.contenidos[0] || "Contenido")}" aria-label="Contenido pregunta ${i + 1}"></td></tr>`).join("");
+    <td><input data-f="tema" value="${esc(c.tema)}" list="dl-temas" placeholder="Ej.: ${esc(P().ejes[0]?.contenidos[0] || "Contenido")}" aria-label="Contenido pregunta ${i + 1}"></td>
+    <td><input type="checkbox" data-f="pil" ${c.pil ? "" : "checked"} aria-label="Pregunta ${i + 1} puntúa"></td></tr>`).join("");
   let dl = $("#dl-temas"); if (!dl) { dl = document.createElement("datalist"); dl.id = "dl-temas"; document.body.appendChild(dl); }
   dl.innerHTML = P().ejes.flatMap(e => e.contenidos).map(c => `<option value="${esc(c)}">`).join("");
 }
@@ -1026,11 +1064,12 @@ $("#key-tbody").addEventListener("click", e => {
   $$(".keyalts button", b.closest("tr")).forEach(x => x.setAttribute("aria-pressed", String(x.dataset.a === c.r)));
   if (S.submitted) S.result = grade();
   persist(); updateProgress();
-  const kc = S.clave.filter(x => x.r).length; $("#key-meter").innerHTML = `${kc}<small>/${S.n}</small>`;
+  const kc = S.clave.filter(x => x.r || x.pil).length; $("#key-meter").innerHTML = `${kc}<small>/${S.n}</small>`;
 });
 $("#key-tbody").addEventListener("change", e => {
   const f = e.target.dataset.f; if (!f) return;
   const i = +e.target.closest("tr").dataset.q;
+  if (f === "pil") { S.clave[i].pil = !e.target.checked; if (S.submitted) S.result = grade(); persist(); return; }
   S.clave[i][f] = e.target.value;
   if (f === "tema" && !S.clave[i].eje && e.target.value) {
     const g = inferEjeFromTema(e.target.value);
@@ -1049,20 +1088,267 @@ $("#rng-apply").addEventListener("click", () => {
 });
 
 /* =====================================================================
+   TABLA DE CONVERSIÓN (Puntaje P → Puntaje PAES)
+   ===================================================================== */
+function toPaes(p) {
+  const T = S.tabla; if (!T || !T.length) return null;
+  if (p <= T[0][0]) return T[0][1];
+  if (p >= T[T.length - 1][0]) return T[T.length - 1][1];
+  for (let i = 0; i < T.length - 1; i++) {
+    const [p0, s0] = T[i], [p1, s1] = T[i + 1];
+    if (p === p0) return s0;
+    if (p > p0 && p < p1) return Math.round(s0 + (s1 - s0) * (p - p0) / (p1 - p0));
+  }
+  return T[T.length - 1][1];
+}
+function num(t) {
+  t = String(t).trim();
+  if (/^\d{1,3}\.\d{3}$/.test(t)) return +t.replace(".", "");
+  if (/^\d+(,\d+)?$/.test(t)) return +t.replace(",", ".");
+  if (/^\d+\.\d+$/.test(t)) return +t;
+  return NaN;
+}
+function cleanTable(map) {
+  const T = [...map.entries()].map(([p, v]) => [p, Math.round(v)]).sort((a, b) => a[0] - b[0]);
+  // descarta valores que rompen la monotonía (ruido de otros números del PDF)
+  const out = [];
+  for (const r of T) if (!out.length || r[1] >= out[out.length - 1][1]) out.push(r);
+  return out;
+}
+function parseTablaText(text) {
+  const map = new Map();
+  for (const line of String(text).split(/\r?\n/)) {
+    const m = line.trim().match(/^(\d{1,3})\s*[;,\t|:= ]\s*(\d{1,4}(?:[.,]\d+)?)\s*$/);
+    if (m) map.set(+m[1], num(m[2]));
+  }
+  return cleanTable(map);
+}
+function renderTabla() {
+  const T = S.tabla;
+  const st = $("#tab-status");
+  if (!T || !T.length) {
+    st.className = "chip neutral"; st.textContent = "Sin tabla";
+    $("#tab-preview").innerHTML = ""; if (document.activeElement !== $("#tab-text")) $("#tab-text").value = "";
+    return;
+  }
+  st.className = "chip good"; st.textContent = `${T.length} valores${S.forma ? " · Forma " + S.forma : ""}`;
+  const pick = T.length <= 12 ? T : T.filter((r, i) => i % Math.ceil(T.length / 12) === 0 || i === T.length - 1);
+  $("#tab-preview").innerHTML = `<p class="hint" style="margin-bottom:6px">Puntaje P ${T[0][0]}–${T[T.length - 1][0]} → Puntaje PAES ${T[0][1]}–${T[T.length - 1][1]}</p>
+    <div class="tabgrid">${pick.map(r => `<span title="Puntaje P ${r[0]} = ${r[1]} puntos"><i>${r[0]}</i><b>${r[1]}</b></span>`).join("")}</div>`;
+  if (document.activeElement !== $("#tab-text")) $("#tab-text").value = T.map(r => r.join(";")).join("\n");
+}
+$("#tab-save").addEventListener("click", () => {
+  const T = parseTablaText($("#tab-text").value);
+  if (T.length < 2) { toast("No encontré filas válidas (formato: 50;806)"); return; }
+  S.tabla = T; if (S.submitted) S.result = grade(); persist(); renderTabla(); toast("Tabla guardada");
+});
+$("#tab-clear").addEventListener("click", () => { S.tabla = null; if (S.submitted) S.result = grade(); persist(); renderTabla(); });
+
+/* =====================================================================
+   LECTOR DEL PDF DE DEMRE (pdf.js)
+   ===================================================================== */
+const PDFJS_BASE = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/";
+let pdfReady = null;
+function loadScript(src) {
+  return new Promise((res, rej) => { const el = document.createElement("script"); el.src = src; el.onload = res; el.onerror = () => rej(new Error("No se pudo cargar el lector de PDF. Revisa tu conexión a internet.")); document.head.appendChild(el); });
+}
+function ensurePdfjs() {
+  return pdfReady ||= (async () => {
+    await loadScript(PDFJS_BASE + "pdf.min.js");
+    await loadScript(PDFJS_BASE + "pdf.worker.min.js"); // define globalThis.pdfjsWorker: se procesa en la página, sin Web Worker externo
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_BASE + "pdf.worker.min.js";
+    return window.pdfjsLib;
+  })().catch(e => { pdfReady = null; throw e; });
+}
+/* Convierte cada página en líneas (agrupando por coordenada Y) y cada línea en celdas. */
+async function pdfLines(buf) {
+  const lib = await ensurePdfjs();
+  const doc = await lib.getDocument({ data: buf, isEvalSupported: false }).promise;
+  const pages = [];
+  for (let pn = 1; pn <= doc.numPages; pn++) {
+    const page = await doc.getPage(pn);
+    const tc = await page.getTextContent();
+    const items = tc.items.filter(it => it.str && it.str.trim()).map(it => ({ s: it.str.trim(), x: it.transform[4], y: it.transform[5], h: Math.abs(it.transform[3]) || 8, w: it.width || 0 }));
+    items.sort((a, b) => b.y - a.y || a.x - b.x);
+    const lines = [];
+    for (const it of items) {
+      const L = lines.find(l => Math.abs(l.y - it.y) <= Math.max(2, Math.min(l.h, it.h) * 0.45));
+      if (L) L.items.push(it); else lines.push({ y: it.y, h: it.h, items: [it] });
+    }
+    lines.sort((a, b) => b.y - a.y);
+    pages.push(lines.map(l => {
+      l.items.sort((a, b) => a.x - b.x);
+      // une fragmentos de una misma celda (separación pequeña) y separa celdas
+      const cells = [];
+      for (const it of l.items) {
+        const last = cells[cells.length - 1];
+        if (last && it.x - last.end < it.h * 0.25 && !/^\d+$/.test(it.s) && !/^\d+$/.test(last.s)) { last.s += (it.x - last.end > 0.5 ? " " : "") + it.s; last.end = it.x + it.w; }
+        else cells.push({ s: it.s, end: it.x + it.w });
+      }
+      return cells.map(c => c.s);
+    }));
+  }
+  return pages;
+}
+const PILOT_RE = /^(\*+|[-–—]|P|PIL|PILOTO|PILOTAJE|N\/?A|NO PUNT[UÚ]A|ANULADA|EXPERIMENTAL)$/i;
+function detectPrueba(t) {
+  if (/competencia matem[aá]tica\s*2|\bm2\b/i.test(t)) return "M2";
+  if (/competencia matem[aá]tica\s*1|\bm1\b/i.test(t)) return "M1";
+  if (/lectora/i.test(t)) return "CL";
+  if (/historia/i.test(t)) return "HIS";
+  if (/ciencias/i.test(t)) return "CIE";
+  return "";
+}
+function strictEje(txt, pk) {
+  const t = norm(txt); if (!t || t.length < 3) return "";
+  let best = "", bestScore = 0;
+  for (const e of PRUEBAS[pk].ejes) {
+    let sc = 0;
+    if (norm(e.nombre) === t) sc = 100;
+    else if (t.includes(norm(e.nombre)) || norm(e.nombre).includes(t)) sc = 50;
+    for (const a of e.alias) if (a.length >= 3 && (` ${t} `).includes(` ${a}`)) sc += a.length;
+    if (sc > bestScore) { bestScore = sc; best = e.nombre; }
+  }
+  return best;
+}
+function parseDemre(pages) {
+  const flat = pages.flat();
+  const all = flat.map(c => c.join(" ")).join("\n");
+  const info = { prueba: detectPrueba(all), forma: "", proceso: "", key: new Map(), tabla: [] };
+  const fm = all.match(/forma\s*(?:n[°º.]?\s*)?[:\-]?\s*(\d{2,4})/i); if (fm) info.forma = fm[1];
+  const pm = all.match(/\b(regular|invierno)\b/i); const ym = all.match(/admisi[oó]n\s*(20\d\d)/i) || all.match(/\b(20[2-3]\d)\b/);
+  info.proceso = [pm ? "PAES " + pm[1][0].toUpperCase() + pm[1].slice(1).toLowerCase() : "PAES", ym ? ym[1] : ""].filter(Boolean).join(" ");
+
+  /* --- claves: celdas "N°" seguidas de una letra A–E (o marca de pregunta piloto) --- */
+  const cands = [];
+  pages.forEach((lines, pn) => lines.forEach(cellsIn => {
+    const cells = [];
+    for (const c of cellsIn) {
+      const m = c.match(/^(\d{1,3})[.)°º]?\s+([A-E])(\s*\*)?(?:\s+(.+))?$/);
+      if (m) { cells.push(m[1], m[2] + (m[3] ? "*" : "")); if (m[4]) cells.push(m[4]); } else cells.push(c);
+    }
+    const isStart = i => /^\d{1,3}[.)°º]?$/.test(cells[i]) && i + 1 < cells.length && (/^[A-E]\s*\*?$/.test(cells[i + 1]) || PILOT_RE.test(cells[i + 1]));
+    const starts = []; cells.forEach((_, i) => { if (isStart(i)) starts.push(i); });
+    starts.forEach((st, j) => {
+      const q = parseInt(cells[st], 10), k = cells[st + 1];
+      const extra = cells.slice(st + 2, j + 1 < starts.length ? starts[j + 1] : cells.length).filter(x => !/^\d+$/.test(x));
+      const letter = (k.match(/^[A-E]/) || [""])[0];
+      const pil = !letter || /\*/.test(k) || extra.some(x => /piloto|pilotaje|no punt[uú]a|experimental/i.test(x));
+      cands.push({ pn, q, r: letter, pil, extra: extra.filter(x => !/piloto|pilotaje|no punt[uú]a|experimental|^\*+$/i.test(x)) });
+    });
+  }));
+  const perPage = {}; cands.forEach(c => (perPage[c.pn] = (perPage[c.pn] || 0) + 1));
+  for (const c of cands) {
+    if (perPage[c.pn] < 5 || c.q < 1 || c.q > 150 || info.key.has(c.q)) continue;
+    info.key.set(c.q, c);
+  }
+  /* nota al pie del tipo "Las preguntas 6, 21 y 40 son de pilotaje" */
+  const foot = all.match(/preguntas?\s+(?:n[°º.]?\s*)?([\d,\sy]+?)\s+(?:son|es|corresponde[n]?|no)\b[^\n]*?(piloto|pilotaje|experimental|no (?:se )?consider|no punt)/i);
+  if (foot) foot[1].split(/[^\d]+/).filter(Boolean).forEach(n => { const c = info.key.get(+n); if (c) c.pil = true; });
+
+  /* --- tabla de transformación: líneas solo numéricas con pares (P, PAES) --- */
+  const map = new Map();
+  const numLines = flat.map(cells => cells.join(" ").trim().split(/\s+/)).map(tk => tk.every(x => !isNaN(num(x))) ? tk.map(num) : null);
+  numLines.forEach((v, i) => {
+    if (!v || v.length < 2) return;
+    for (const g of [2, 3]) {
+      if (v.length % g) continue;
+      const rows = []; let ok = true;
+      for (let j = 0; j < v.length; j += g) {
+        const p = v[j], sc = v[j + 1];
+        if (!(Number.isInteger(p) && p >= 0 && p <= 150 && sc >= 100 && sc <= 1000)) { ok = false; break; }
+        rows.push([p, sc]);
+      }
+      if (ok) { rows.forEach(([p, sc]) => { if (!map.has(p)) map.set(p, sc); }); return; }
+    }
+    // disposición horizontal: una línea con P (0..150) y la siguiente con los puntajes
+    const nx = numLines[i + 1];
+    if (nx && nx.length === v.length && v.every(p => Number.isInteger(p) && p >= 0 && p <= 150) && nx.every(sc => sc >= 100 && sc <= 1000))
+      v.forEach((p, j) => { if (!map.has(p)) map.set(p, nx[j]); });
+  });
+  const T = cleanTable(map);
+  if (T.length >= 8) info.tabla = T;
+  return info;
+}
+async function handlePdf(file) {
+  const msg = $("#pdf-msg");
+  const say = (cls, html) => { msg.hidden = false; msg.className = "msg " + cls; msg.innerHTML = html; };
+  say("info", `Leyendo <b>${esc(file.name)}</b>…`);
+  let info;
+  try {
+    const buf = new Uint8Array(await file.arrayBuffer());
+    const pages = await pdfLines(buf);
+    if (!pages.flat().length) { say("err", "El PDF no tiene texto seleccionable (parece una imagen escaneada). Copia la clave y la tabla a mano en los cuadros de abajo."); return; }
+    info = parseDemre(pages);
+  } catch (e) { say("err", esc(e.message || "No pude leer el PDF.")); return; }
+  if (!info.key.size && !info.tabla.length) { say("err", "No encontré una tabla de claves ni de puntajes en este PDF. ¿Es el clavijero de DEMRE? Si no, pega la clave en el cuadro de texto."); return; }
+
+  // ¿el PDF es de otra prueba?
+  const maxQ = info.key.size ? Math.max(...info.key.keys()) : 0;
+  if (info.prueba && info.prueba !== S.prueba) {
+    const hay = S.resp.some(Boolean);
+    const go = !hay || await ask("El PDF es de otra prueba", `El PDF corresponde a <b>${esc(PRUEBAS[info.prueba].nombre)}</b> y tu hoja está configurada para <b>${esc(P().nombre)}</b>. Si cambias la hoja se borrarán tus respuestas actuales.`, "Cambiar la hoja", true);
+    if (go) {
+      const nombre = S.nombre, fecha = S.fecha;
+      S = blankState(info.prueba); S.nombre = nombre; S.fecha = fecha;
+      renderConfig(); resetTimerUI();
+    }
+  }
+  if (maxQ > S.n && maxQ <= 120) resize(maxQ, S.alts);
+
+  // aplicar clave
+  let n = 0, nPil = 0, nEje = 0;
+  for (const [q, c] of info.key) {
+    if (q > S.n) continue;
+    const slot = S.clave[q - 1];
+    slot.r = c.r || slot.r; slot.pil = c.pil;
+    let eje = "", rest = [];
+    for (const x of c.extra) { const m = !eje && strictEje(x, S.prueba); if (m) eje = m; else rest.push(x); }
+    if (!eje && rest.length && !P().ejes.length) eje = matchEje(rest.shift());
+    slot.eje = eje || slot.eje || (rest.length ? inferEjeFromTema(rest.join(" ")) : "");
+    slot.tema = rest.join(" · ") || slot.tema;
+    n++; if (c.pil) nPil++; if (slot.eje) nEje++;
+  }
+  if (info.tabla.length) S.tabla = info.tabla;
+  if (info.forma) S.forma = info.forma;
+  if (!S.nombre && (info.forma || info.proceso)) S.nombre = `${info.proceso}${info.forma ? " · Forma " + info.forma : ""}`.trim();
+  if (S.submitted) S.result = grade();
+  persist(); renderConfig(); buildSheet(); renderKey();
+
+  const parts = [];
+  parts.push(info.prueba ? `<b>${esc(PRUEBAS[info.prueba].nombre)}</b>${info.forma ? `, forma ${esc(info.forma)}` : ""}` : "Prueba no identificada");
+  parts.push(n ? `${n} claves cargadas${nPil ? ` (${nPil} no puntúan)` : ""}${n ? `, ${nEje} con eje temático` : ""}` : "sin tabla de claves");
+  parts.push(info.tabla.length ? `tabla de puntaje con ${info.tabla.length} valores (P ${info.tabla[0][0]}–${info.tabla[info.tabla.length - 1][0]} → ${info.tabla[0][1]}–${info.tabla[info.tabla.length - 1][1]} pts)` : "sin tabla de puntaje");
+  const warn = [];
+  if (n && n < S.n) warn.push(`Faltan ${S.n - n} claves: revísalas en “Clave pregunta por pregunta”.`);
+  if (!info.tabla.length) warn.push("No encontré la tabla de transformación: puedes pegarla en “Tabla de conversión”.");
+  if (n && nEje < n) warn.push(`${n - nEje} preguntas quedaron sin eje: asígnalo por rango.`);
+  say(warn.length ? "info" : "ok", `Listo: ${parts.join(" · ")}.${warn.length ? "<br>" + warn.map(esc).join(" ") : ""}`);
+  toast("PDF de DEMRE cargado");
+}
+$("#pdf-file").addEventListener("change", e => { const f = e.target.files[0]; e.target.value = ""; if (f) handlePdf(f); });
+const drop = $("#pdf-drop");
+["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => { const f = e.dataTransfer.files[0]; if (f) handlePdf(f); });
+
+/* =====================================================================
    CORRECCIÓN
    ===================================================================== */
 function grade() {
-  const items = [];
+  let items = [];
   for (let i = 0; i < S.n; i++) {
     const k = S.clave[i]; if (!k.r) continue;
     const r = S.resp[i];
-    items.push({ q: i + 1, r, k: k.r, eje: k.eje || "Sin eje asignado", tema: k.tema || "", duda: !!S.dudas[i],
+    items.push({ q: i + 1, r, k: k.r, eje: k.eje || "Sin eje asignado", tema: k.tema || "", duda: !!S.dudas[i], pil: !!k.pil,
       st: !r ? "omit" : r === k.r ? "ok" : "bad" });
   }
+  const pilots = items.filter(x => x.pil);
+  items = items.filter(x => !x.pil);
   const total = items.length, ok = items.filter(x => x.st === "ok").length, bad = items.filter(x => x.st === "bad").length, omit = total - ok - bad;
   const ejes = {};
   for (const it of items) { const e = (ejes[it.eje] ||= { t: 0, ok: 0, bad: 0, omit: 0 }); e.t++; e[it.st === "ok" ? "ok" : it.st]++; }
-  return { items, total, ok, bad, omit, pct: total ? Math.round(1000 * ok / total) / 10 : 0, ejes, ms: elapsedMs() };
+  return { items, pilots, total, ok, bad, omit, pct: total ? Math.round(1000 * ok / total) / 10 : 0, ejes, ms: elapsedMs(), paes: toPaes(ok) };
 }
 function submit() {
   if (S.timer.start) { S.timer.acc += Date.now() - S.timer.start; S.timer.start = null; resetTimerUI(); }
@@ -1070,7 +1356,7 @@ function submit() {
   // historial (si se reenvía la misma hoja, actualiza el registro)
   S.histId ||= "h" + Date.now().toString(36);
   const rec = { id: S.histId, prueba: S.prueba, nombre: S.nombre || "Sin nombre", fecha: S.fecha || today(), total: S.result.total,
-    ok: S.result.ok, bad: S.result.bad, omit: S.result.omit, pct: S.result.pct, min: Math.round(S.result.ms / 60000),
+    ok: S.result.ok, bad: S.result.bad, omit: S.result.omit, pct: S.result.pct, paes: S.result.paes, forma: S.forma || "", min: Math.round(S.result.ms / 60000),
     ejes: Object.fromEntries(Object.entries(S.result.ejes).map(([k, v]) => [k, { t: v.t, ok: v.ok }])) };
   const ix = H.findIndex(h => h.id === rec.id);
   if (ix >= 0) H[ix] = rec; else H.push(rec);
@@ -1092,17 +1378,28 @@ function renderResults() {
 
   /* --- resumen --- */
   const delta = prev ? R.ok - prev.ok : null;
+  R.paes = toPaes(R.ok);
+  const hrec = H.find(h => h.id === S.histId);
+  if (hrec && hrec.paes !== R.paes) { hrec.paes = R.paes; hrec.forma = S.forma || ""; save(LS_HIST, H); }
+  const tmax = S.tabla && S.tabla.length ? S.tabla[S.tabla.length - 1][0] : null;
+  const dPaes = prev && prev.paes != null && R.paes != null ? R.paes - prev.paes : null;
   let html = `<div class="panel-head" style="margin:0"><div><h2>Resultados · ${esc(Pz.nombre)}</h2>
       <p class="hint">${esc(S.nombre || "Ensayo sin nombre")} · ${esc((S.fecha || "").split("-").reverse().join("/"))}${R.ms > 60000 ? ` · Tiempo usado: <span class="mono">${fmt(R.ms)}</span>` : ""}</p></div>
       <div class="row"><button class="btn small" data-goto="hoja" type="button">Ver corrección en la hoja</button><button class="btn small" id="btn-new" type="button">Nuevo ensayo</button></div></div>
     <div class="summary">
-      <div class="stat hero"><span class="k">Correctas</span><span class="v mono">${R.ok}<span style="font-size:1.3rem;opacity:.7">/${R.total}</span></span>
-        <span class="s">${R.pct.toLocaleString("es-CL")} % de logro${delta !== null ? ` · <b>${delta >= 0 ? "+" : ""}${delta}</b> vs. ensayo anterior` : ""}</span></div>
+      ${R.paes != null
+        ? `<div class="stat hero"><span class="k">Puntaje PAES</span><span class="v mono">${R.paes}</span>
+          <span class="s">Puntaje P ${R.ok} · ${R.ok} de ${R.total} correctas (${R.pct.toLocaleString("es-CL")} %)${dPaes !== null ? ` · <b>${dPaes >= 0 ? "+" : ""}${dPaes}</b> pts vs. anterior` : delta !== null ? ` · <b>${delta >= 0 ? "+" : ""}${delta}</b> correctas vs. anterior` : ""}</span></div>`
+        : `<div class="stat hero"><span class="k">Correctas</span><span class="v mono">${R.ok}<span style="font-size:1.3rem;opacity:.7">/${R.total}</span></span>
+          <span class="s">${R.pct.toLocaleString("es-CL")} % de logro${delta !== null ? ` · <b>${delta >= 0 ? "+" : ""}${delta}</b> vs. ensayo anterior` : ""}</span></div>`}
       <div class="stat"><span class="k">Incorrectas</span><span class="v mono" style="color:var(--bad)">${R.bad}</span><span class="s">${R.total ? Math.round(100 * R.bad / R.total) : 0} % del total</span></div>
       <div class="stat"><span class="k">Omitidas</span><span class="v mono" style="color:var(--warn)">${R.omit}</span><span class="s">${R.omit ? "Puntos que regalaste" : "Respondiste todo"}</span></div>
       <div class="stat"><span class="k">Dudas acertadas</span><span class="v mono">${R.items.filter(x => x.duda && x.st === "ok").length}<span style="font-size:1.1rem;color:var(--ink-3)">/${R.items.filter(x => x.duda).length}</span></span><span class="s">Preguntas que marcaste con ?</span></div>
     </div>
-    <p class="hint">El puntaje PAES (escala 100–1000) se obtiene con una tabla de conversión que DEMRE publica para cada proceso, por lo que aquí se muestra el % de logro${Pz.n > 0 && S.prueba !== "OTRA" ? ". En la prueba oficial algunas preguntas son experimentales y no puntúan" : ""}.</p>`;
+    ${R.paes != null
+      ? `<p class="hint">Puntaje calculado con la tabla de transformación cargada${S.forma ? ` (forma ${esc(S.forma)})` : ""}: Puntaje P = respuestas correctas que puntúan.${(() => { const pq = S.clave.map((c, i) => c.pil ? i + 1 : 0).filter(Boolean); return pq.length ? ` Se excluyeron ${pq.length} preguntas que no puntúan (${pq.join(", ")}).` : ""; })()}</p>
+         ${tmax !== null && R.total > tmax ? `<p class="msg err">La tabla llega hasta Puntaje P ${tmax}, pero se están contando ${R.total} preguntas. Marca en la clave las preguntas piloto que no puntúan para que el puntaje sea exacto.</p>` : ""}`
+      : `<p class="hint">Para ver tu puntaje PAES (100–1000), sube en la pestaña Clave el PDF de DEMRE con la tabla de transformación, o pega la tabla de tu ensayo. Mientras tanto se muestra el % de logro.</p>`}`;
 
   /* --- por eje --- */
   html += `<div class="panel"><div class="panel-head"><h3>Desempeño por eje temático</h3><span class="hint">Línea de referencia: 85 % (dominado) y 60 % (en desarrollo)</span></div><div class="meters">` +
@@ -1120,7 +1417,7 @@ function renderResults() {
   const top2 = focus.slice(0, 2);
   const gain = top2.reduce((s, e) => s + Math.ceil(e.miss / 2), 0) + Math.ceil(R.omit / 2 * (R.total ? R.ok / R.total : 0));
   html += `<div class="panel"><div class="panel-head"><h3>Plan de mejora para el próximo ensayo</h3>
-    ${focus.length ? `<span class="chip neutral">Meta: +${gain} correctas → ${Math.min(100, Math.round(100 * (R.ok + gain) / R.total))} %</span>` : ""}</div>`;
+    ${focus.length ? `<span class="chip neutral">Meta: +${gain} correctas → ${R.paes != null ? `${toPaes(Math.min(R.total, R.ok + gain))} puntos` : `${Math.min(100, Math.round(100 * (R.ok + gain) / R.total))} %`}</span>` : ""}</div>`;
   if (!focus.length) html += `<p>Respondiste todo correctamente. Mantén la práctica con ensayos cronometrados y sube la dificultad.</p>`;
   else {
     html += `<p class="hint" style="margin-bottom:12px">Ordenado por impacto: primero los ejes donde perdiste más preguntas. Si recuperas la mitad de los errores de tus ${top2.length === 1 ? "eje prioritario" : "dos ejes prioritarios"}, sumas ${gain} respuestas correctas.</p><div class="plan">`;
@@ -1135,7 +1432,7 @@ function renderResults() {
       const pr = e.pct < 60 ? ["p-alta", "Prioridad alta", "bad"] : e.pct < 85 ? ["p-media", "Prioridad media", "warn"] : ["p-ok", "Afinar detalles", "good"];
       return `<div class="card ${pr[0]}">
         <div class="card-head"><h3>${idx + 1}. ${esc(e.name)}</h3><span class="chip ${pr[2]}">${pr[1]} · ${e.miss} pregunta${e.miss > 1 ? "s" : ""} perdida${e.miss > 1 ? "s" : ""}</span></div>
-        ${temaEntries.length ? `<div><div class="sub">Contenidos a repasar</div><ul>${temaEntries.map(([t, qs]) => `<li><b>${esc(t)}</b> <span class="muted mono">(preg. ${qs.join(", ")})</span></li>`).join("")}</ul></div>` : ""}
+        ${temaEntries.length ? `<div><div class="sub">Contenidos y habilidades a repasar</div><ul>${temaEntries.map(([t, qs]) => `<li><b>${esc(t)}</b> <span class="muted mono">(preg. ${qs.join(", ")})</span></li>`).join("")}</ul></div>` : ""}
         ${sinTema.length ? `<div><div class="sub">${temaEntries.length ? "Otras preguntas a revisar" : "Preguntas a revisar"}</div><div class="qlist">${sinTema.map(q => `<span>${q}</span>`).join("")}</div></div>` : ""}
         ${!temaEntries.length && kb ? `<div class="hint">Contenidos de este eje: ${kb.contenidos.map(esc).join(" · ")}. Agrega el contenido de cada pregunta en la clave para un diagnóstico más fino.</div>` : ""}
         <div><div class="sub">Cómo mejorar</div><ul>${tips.map(t => `<li>${esc(t)}</li>`).join("")}</ul></div>
@@ -1174,15 +1471,15 @@ function renderResults() {
     habits.map(h => `<div class="habit"><span class="ic ${h[0]}" aria-hidden="true">${h[1]}</span><p>${h[2]}</p></div>`).join("") + `</div></div>`;
 
   /* --- detalle --- */
-  const counts = { errores: R.bad + R.omit, incorrectas: R.bad, omitidas: R.omit, todas: R.total };
-  const rows = R.items.filter(x => resFilter === "todas" || (resFilter === "errores" && x.st !== "ok") || (resFilter === "incorrectas" && x.st === "bad") || (resFilter === "omitidas" && x.st === "omit"));
+  const counts = { errores: R.bad + R.omit, incorrectas: R.bad, omitidas: R.omit, todas: R.total + (R.pilots || []).length };
+  const rows = (resFilter === "todas" ? R.items.concat(R.pilots || []).sort((a, b) => a.q - b.q) : R.items).filter(x => resFilter === "todas" || (resFilter === "errores" && x.st !== "ok") || (resFilter === "incorrectas" && x.st === "bad") || (resFilter === "omitidas" && x.st === "omit"));
   html += `<div class="panel"><div class="panel-head"><h3>Detalle pregunta por pregunta</h3>
     <div class="filters" id="res-filters">${Object.entries(counts).map(([k, c]) => `<button type="button" data-f="${k}" aria-pressed="${resFilter === k}">${k[0].toUpperCase() + k.slice(1)} (${c})</button>`).join("")}</div></div>
     ${rows.length ? `<div class="table-wrap"><table><thead><tr><th>N°</th><th>Tu respuesta</th><th>Correcta</th><th>Eje</th><th>Contenido</th><th>Estado</th></tr></thead><tbody>` +
       rows.map(x => `<tr><td class="num">${x.q}</td>
         <td>${x.r ? `<span class="ans ${x.st === "ok" ? "k" : "u-bad"}">${x.r}</span>` : `<span class="ans u-omit">—</span>`}</td>
         <td><span class="ans k">${x.k}</span></td><td>${esc(x.eje)}</td><td>${esc(x.tema) || '<span class="muted">—</span>'}</td>
-        <td>${x.st === "ok" ? '<span class="chip good">Correcta</span>' : x.st === "bad" ? '<span class="chip bad">Incorrecta</span>' : '<span class="chip warn">Omitida</span>'}${x.duda ? ' <span class="chip neutral" title="La marcaste con duda">Duda</span>' : ""}</td></tr>`).join("") +
+        <td>${x.st === "ok" ? '<span class="chip good">Correcta</span>' : x.st === "bad" ? '<span class="chip bad">Incorrecta</span>' : '<span class="chip warn">Omitida</span>'}${x.duda ? ' <span class="chip neutral" title="La marcaste con duda">Duda</span>' : ""}${x.pil ? ' <span class="chip neutral" title="Pregunta piloto: no cuenta para el puntaje">No puntúa</span>' : ""}</td></tr>`).join("") +
       `</tbody></table></div>` : `<p class="hint">No hay preguntas en esta categoría.</p>`}</div>`;
 
   $("#res-body").innerHTML = html;
@@ -1219,9 +1516,9 @@ function renderHistory() {
     html += `<div class="panel hist-group">
       <div class="panel-head" style="margin:0"><h3>${esc(Pz.nombre)}</h3><span class="hint">${list.length} ensayo${list.length > 1 ? "s" : ""} · Mejor: <b class="mono">${String(best).replace(".", ",")} %</b> · Último: <b class="mono">${String(last.pct).replace(".", ",")} %</b></span></div>
       <div class="hbars" role="img" aria-label="% de logro por ensayo en ${esc(Pz.nombre)}">${list.map(h => `<div class="hbar" title="${esc(h.nombre)} · ${esc(h.fecha.split("-").reverse().join("/"))}: ${h.ok}/${h.total} (${h.pct} %)"><span>${Math.round(h.pct)}</span><i style="height:${Math.max(2, h.pct * 0.8)}px"></i></div>`).join("")}</div>
-      <div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Ensayo</th><th>Correctas</th><th>%</th>${ejeNames.map(e => `<th>${esc(e)}</th>`).join("")}<th>Tiempo</th><th></th></tr></thead><tbody>` +
+      <div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Ensayo</th><th>Correctas</th><th>%</th><th>Puntaje</th>${ejeNames.map(e => `<th>${esc(e)}</th>`).join("")}<th>Tiempo</th><th></th></tr></thead><tbody>` +
       list.slice().reverse().map(h => `<tr><td class="mono">${esc(h.fecha.split("-").reverse().join("/"))}</td><td>${esc(h.nombre)}</td>
-        <td class="mono">${h.ok}/${h.total}</td><td class="mono"><b>${String(h.pct).replace(".", ",")}</b></td>
+        <td class="mono">${h.ok}/${h.total}</td><td class="mono"><b>${String(h.pct).replace(".", ",")}</b></td><td class="mono">${h.paes != null ? `<b>${h.paes}</b>` : '<span class="muted">—</span>'}</td>
         ${ejeNames.map(e => { const v = h.ejes[e]; if (!v) return `<td class="muted">—</td>`; const p = Math.round(100 * v.ok / v.t); return `<td><span class="chip ${level(p)}">${p} %</span></td>`; }).join("")}
         <td class="mono">${h.min ? h.min + " min" : "—"}</td>
         <td><button class="btn small danger" data-del="${esc(h.id)}" type="button" aria-label="Eliminar ${esc(h.nombre)}">Eliminar</button></td></tr>`).join("") +
